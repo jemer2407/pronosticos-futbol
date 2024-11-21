@@ -67,7 +67,7 @@ class Match(models.Model):
     class Meta:
         verbose_name = 'Partido'
         verbose_name_plural = 'Partidos'
-        ordering = ['league']
+        ordering = ['date']
         
     
     def __str__(self):

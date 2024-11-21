@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{match.home_team}} - {{match.visit_team}}{% endblock %}
+{% block content %}
+
+<!-- Content Row -->
+<div class="row">
+    
+    <h1>
+        {{title}}{{match.home_team}} - {{match.visit_team}}
+    </h1>
+    
+        <div class='col-12'>
+            <p>{{match.league.contry}}</p>
+            <p>{{match.league}}</p>
+            <p>{{match.soccer_day}}</p>
+            <p>{{match.date}}</p>
+            <p>{{match.home_team}}</p>
+            <p>{{match.visit_team}}</p>
+        </div>
+        
+    
+    
+</div>
+    
+
+{% endblock %}

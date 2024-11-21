@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+  <!-- Content Row -->
+  <div class="row">
+    <h1>{{title}}</h1>
+
+    <table class="table">
+      <thead>
+          <tr>
+            <th scope="col">Pais</th>
+            <th scope="col">Liga</th>
+            <th scope="col">Jornada</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Local</th>
+            <th scope="col">Visitante</th>
+          </tr>
+        </thead> 
+        <tbody>
+          {% for match in match_list %}
+            <tr>
+              <td>{{match.league.contry}}</td>
+              <td>{{match.league}}</td>
+              <td>{{match.soccer_day}}</td>
+              <td>{{match.date}}</td>
+              <td>{{match.home_team}}</td>
+              <td>{{match.visit_team}}</td>
+              <td>                      
+                <a href="{% url 'match-detail' match.id %}" class="btn btn-primary">Pronosticos</a>                  
+              </td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+{% endblock %}

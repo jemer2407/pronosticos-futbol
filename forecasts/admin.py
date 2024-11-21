@@ -16,7 +16,7 @@ class TeamAdmin(admin.ModelAdmin):
 
 class MatchAdmin(admin.ModelAdmin):
     list_display = ('league', 'soccer_day','home_team', 'visit_team', 'date', 'gol_home_ht', 'gol_visit_ht', 'gol_home_ft', 'gol_visit_ft')
-    ordering = ('date',)
+    ordering = ('-date',)
 
 
 

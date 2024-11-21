@@ -4,17 +4,19 @@ from django.views.generic.base import TemplateView
 from django.urls import reverse
 from .forms import ContactForm
 from django.core.mail import EmailMessage
+from forecasts.models import Match
 
 
 
-class HomePageView(TemplateView):
+class HomeView(TemplateView):
+    model = Match
     template_name = "core/home.html"
-    # *args --> argumentos
-    # **kwargs --> argumentos en clave valor
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {
-            'title': 'Pronosticador Fútbol'
-        })
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Pronosticador Fútbol'
+
+        return context
 
 class AboutView(TemplateView):
     template_name = "core/about.html"
