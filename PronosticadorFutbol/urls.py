@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('pages/', include('pages.urls')),
+    #path('forecasts/', include('forecasts.urls')),
     # paths de Auth. con este path django nos provee de varias urls para manejar autenticacion
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('registration.urls')),    
