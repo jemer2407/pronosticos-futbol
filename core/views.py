@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView
 from django.urls import reverse
 from .forms import ContactForm
 from django.core.mail import EmailMessage
-from forecasts.models import Match
+from forecasts.models import Match, Contry, League
 
 
 
@@ -15,6 +15,9 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Pronosticador Fútbol'
+        leagues = League.objects.all()
+        context['leagues'] = leagues
+
 
         return context
 

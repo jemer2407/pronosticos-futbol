@@ -153,19 +153,7 @@ def calcular_num_match_1x2(m, option):
     return num_total_match_1x2, num_match_win,num_match_lose,num_match_empate
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-# Create your views here.
+# --------------------------- Create your views here ------------------------------
 
 class NextMatchesListView(ListView):
     model = Match
