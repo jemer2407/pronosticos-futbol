@@ -7,35 +7,113 @@
 <div class="row">
     
     <h1>
-        {{title}}{{match.home_team}} - {{match.visit_team}}
+        {{title}}
+        <img src="{{match.home_team.image.url}}" class="img-fluid" alt="">  {{match.home_team}} - 
+        <img src="{{match.visit_team.image.url}}" class="img-fluid" alt="">  {{match.visit_team}}
     </h1>
     
         <div class='col-12'>
-            <p>{{match.league.contry}}</p>
-            <p>{{match.league}}</p>
-            <p>{{match.soccer_day}}</p>
-            <p>{{match.date}}</p>
-            <p>{{match.home_team}}</p>
-            <p>{{match.visit_team}}</p>
-
-            <p>Gana local -- {{cuota_win_home}}€ ({{prob_win_home}}%)</p>
-            <p>Gana visitane -- {{cuota_win_visit}}€ ({{prob_win_visit}}%)</p>
-            <p>Empate -- {{cuota_empate}}€ ({{prob_empate}}%)</p>
-            <p>Over 0.5 ht -- {{cuota_over_05_ht}}€ ({{prob_over_05_ht}}%)</p>
-            <p>Over 1.5 ht -- {{cuota_over_15_ht}}€ ({{prob_over_15_ht}}%)</p>
-            <p>Over 0.5 ft -- {{cuota_over_05_ft}}€ ({{prob_over_05_ft}}%)</p>
-            <p>Over 1.5 ft -- {{cuota_over_15_ft}}€ ({{prob_over_15_ft}}%)</p>
-            <p>Over 2.5 ft -- {{cuota_over_25_ft}}€ ({{prob_over_25_ft}}%)</p>
-            <p>Over 3.5 ft -- {{cuota_over_35_ft}}€ ({{prob_over_35_ft}}%)</p>
-            <p>Over 0.5 2ª mitad -- {{cuota_over_05_mitad2}}€ ({{prob_over_05_mitad2}}%)</p>
-            <p>Ambos Equipo Marcan -- {{cuota_aem_ft}}€ ({{prob_aem_ft}}%)</p>
-            <p>Ambos Equipo Marcan 1ª mitad -- {{cuota_aem_ht}}€ ({{prob_aem_ht}}%)</p>
-            <p>Ambos Equipo Marcan 1ª mitad -- {{cuota_aem_ht2}}€ ({{prob_aem_ht2}}%)</p>
+            <p>{{match.league.contry}} - {{match.league}} - {{match.date}}</p>
             
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">{{match.home_team}}</th>
+                        <th scope="col">Empate</th>
+                        <th scope="col">{{match.visit_team}}</th>
+                    </tr>
+                    </thead> 
+                    <tbody>
+                        <tr>
+                            <td>{{cuota_win_home}}€ ({{prob_win_home}}%)</td>
+                            <td>{{cuota_empate}}€ ({{prob_empate}}%)</td>
+                            <td>{{cuota_win_visit}}€ ({{prob_win_visit}}%)</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Mercado</th>
+                        <th scope="col">Over</th>
+                        <th scope="col">Under</th>
+                    </tr>
+                    </thead> 
+                    <tbody>
+                        <tr>
+                            <td>0.5 goles ht</td>
+                            <td>{{cuota_over_05_ht}}€ ({{prob_over_05_ht}}%)</td>
+                            <td>{{cuota_under_05_ht}}€ ({{prob_under_05_ht}}%)</td>
+                        </tr>
+                        <tr>
+                            <td>1.5 goles ht</td>
+                            <td>{{cuota_over_15_ht}}€ ({{prob_over_15_ht}}%)</td>
+                            <td>{{cuota_under_15_ht}}€ ({{prob_under_15_ht}}%)</td>
+                        </tr>
+                        <tr>
+                            <td>0.5 goles ft</td>
+                            <td>{{cuota_over_05_ft}}€ ({{prob_over_05_ft}}%)</td>
+                            <td>{{cuota_under_05_ft}}€ ({{prob_under_05_ft}}%)</td>
+                        </tr>
+                        <tr>
+                            <td>1.5 goles ft</td>
+                            <td>{{cuota_over_15_ft}}€ ({{prob_over_15_ft}}%)</td>
+                            <td>{{cuota_under_15_ft}}€ ({{prob_under_15_ft}}%)</td>
+                        </tr>
+                        <tr>
+                            <td>2.5 goles ft</td>
+                            <td>{{cuota_over_25_ft}}€ ({{prob_over_25_ft}}%)</td>
+                            <td>{{cuota_under_25_ft}}€ ({{prob_under_25_ft}}%)</td>
+                        </tr>
+                        <tr>
+                            <td>3.5 goles ft</td>
+                            <td>{{cuota_over_35_ft}}€ ({{prob_over_35_ft}}%)</td>
+                            <td>{{cuota_under_35_ft}}€ ({{prob_under_35_ft}}%)</td>
+                        </tr>
+                        <tr>
+                            <td>0.5 goles 2ª mitad</td>
+                            <td>{{cuota_over_05_mitad2}}€ ({{prob_over_05_mitad2}}%)</td>
+                            <td>{{cuota_under_05_mitad2}}€ ({{prob_under_05_mitad2}}%)</td>
+                        </tr>
+                        <tr>
+                            <td>0.5 goles 2ª mitad</td>
+                            <td>{{cuota_over_05_mitad2}}€ ({{prob_over_05_mitad2}}%)</td>
+                            <td>{{cuota_under_05_mitad2}}€ ({{prob_under_05_mitad2}}%)</td>
+                        </tr>                    
+                </tbody>
+            </table>
+          
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Ambos Equpos Anotarán</th>
+                        <th scope="col">Si</th>
+                        <th scope="col">No</th>
+                    </tr>
+                    </thead> 
+                    <tbody>
+                        <tr>
+                            <td>FT</td>
+                            <td>{{cuota_aem_ft}}€ ({{prob_aem_ft}}%)</td>
+                            <td>{{cuota_aem_ft_no}}€ ({{prob_aem_ft_no}}</td>
+                        </tr>
+                        <tr>
+                            <td>1ª mitad</td>
+                            <td>{{cuota_aem_ht}}€ ({{prob_aem_ht}}%)</td>
+                            <td>{{cuota_aem_ht_no}}€ ({{prob_aem_ht_no}}%)</td>
+                        </tr>
+                        <tr>
+                            <td>2ª mitad</td>
+                            <td>{{cuota_aem_ht2}}€ ({{prob_aem_ht2}}%)</td>
+                            <td>{{cuota_aem_ht2_no}}€ ({{prob_aem_ht2_no}}%)</td>
+                        </tr>
+                    
+                </tbody>
+            </table>
         </div>
-        
-    
-    
 </div>
     
 
