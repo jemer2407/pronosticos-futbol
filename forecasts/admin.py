@@ -9,7 +9,7 @@ class ContryAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 class LeagueAdmin(admin.ModelAdmin):
-    list_display = ('name','season','contry')
+    list_display = ('name','season','contry','slug')
     
 
 class TeamAdmin(admin.ModelAdmin):

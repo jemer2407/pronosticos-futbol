@@ -20,12 +20,12 @@
         <tbody>
           {% for match in match_list %}
             <tr>
-              <td>{{match.league.contry}}</td>
+              <td><img src="{{match.league.contry.image.url}}" class="img-fluid" width=25px height=20px alt=""> </td>
               <td>{{match.league}}</td>
               <td>{{match.soccer_day}}</td>
               <td>{{match.date}}</td>
-              <td>{{match.home_team}}</td>
-              <td>{{match.visit_team}}</td>
+              <td><img src="{{match.home_team.image.url}}" class="img-fluid" alt=""> {{match.home_team}}</td>
+              <td><img src="{{match.visit_team.image.url}}" class="img-fluid" alt=""> {{match.visit_team}}</td>
               <td>                      
                 <a href="{% url 'match-detail' match.id %}" class="btn btn-primary">Pronosticos</a>                  
               </td>

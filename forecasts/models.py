@@ -30,6 +30,7 @@ class League(models.Model):
     name = models.CharField(max_length=100, verbose_name='Nombre')
     season = models.ForeignKey(Season, on_delete=models.CASCADE, blank=False, null=False, verbose_name='Temporada')
     contry = models.ForeignKey(Contry, on_delete=models.CASCADE, blank=False, null=False, verbose_name='Pais')
+    slug = models.SlugField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Liga'

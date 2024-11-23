@@ -261,9 +261,4 @@ class MatchDetailView(DetailView):
         context['prob_aem_h2t_no'] = round(100 - prob_aem_ht2,2)
         context['cuota_aem_ht2_no'] = np.round((1/(100 - prob_aem_ht2))*100,2)
 
-
-
-       
-
-
         return context
