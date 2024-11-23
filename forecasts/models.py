@@ -17,6 +17,7 @@ class Season(models.Model):
 
 class Contry(models.Model):
     name = models.CharField(max_length=50, verbose_name='Nombre')
+    image = models.ImageField(verbose_name='Imagen', upload_to='contry', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Pais'

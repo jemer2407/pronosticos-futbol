@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 import numpy as np
-from .models import Match
+from .models import Match, League
 
 
 # ----------- funciones para calcular los diferentes mercados -----------------
@@ -165,7 +165,9 @@ class NextMatchesListView(ListView):
         return context
     
     def get_queryset(self):
-        unplayed_match = Match.objects.filter(gol_home_ht=None)  # aqui obtengo los que no se han jugado aun
+        league_id = get_object_or_404(League, id=self.kwargs['pk'])
+
+        unplayed_match = Match.objects.filter(league=league_id).filter(gol_home_ht=None)  # aqui obtengo los que no se han jugado aun
         ten_matches = unplayed_match[:10]
         
         return ten_matches

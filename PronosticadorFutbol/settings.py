@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_summernote',
     # apps propias
     'core',
+    'feeder',
     'forecasts',
     'pages',
 ]
