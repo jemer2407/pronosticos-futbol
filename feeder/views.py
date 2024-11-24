@@ -135,7 +135,38 @@ def scraper(request):
             if a != None:
                 #urls_match.append(a['href'].strip())
                 req_match = requests.get('{}{}'.format(url,a['href'].strip()), headers = headers).text
-                soup_match = BeautifulSoup(req,'html.parser')
+                soup_match = BeautifulSoup(req_match,'html.parser')
+                etiq_soccer_day = soup_match.find('div', {'class': 'jornada'}).find('a')
+                if soup_match.find('span',{'class':"jor-status jor-finished"}).text == 'FINALIZADO':
+                    soccer_day = etiq_soccer_day.text[8:10]
+                    etiq_teams = soup_match.find('div',{'class': 'performers'}).find_all('h2')
+                    
+                    home_team = etiq_teams[0].text
+                    visit_team = etiq_teams[1].text
+                    etiq_goles_ft = soup_match.find_all('span', {'class': 'claseR'})
+                    home_gol_ft = etiq_goles_ft[0].text
+                    visit_gol_ft = etiq_goles_ft[1].text
+                    
+                    etiq_min_gol = soup_match.find_all('td', {'class': 'mhr-min'})
+                    
+                    if etiq_min_gol != None:
+                        minutos_goles = []
+                        for etiq in etiq_min_gol:
+                            if etiq.text != '':
+                                eliminar = "'"
+                                minutos_goles.append(int(etiq.text.replace(eliminar,"")))
+                    
+                    print(minutos_goles)
+
+
+                    
+                    
+                    
+                    #print(soccer_day)
+                    print('{} {} - {} {}'.format(home_team,home_gol_ft,visit_gol_ft,visit_team))
+
+                    
+                    
                 
                 #print('{}{}'.format(url,a['href'].strip()))
             #url_match = a['href'].strip()
