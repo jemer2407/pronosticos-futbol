@@ -3,7 +3,9 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.db.models import Q
 from django.urls import reverse, reverse_lazy
+from django.conf import settings
 from bs4 import BeautifulSoup
+import os
 import requests
 from forecasts.models import Contry, League, Team, Match
 from feeder.forms import ContryForm, LeagueForm, TeamForm
@@ -117,7 +119,7 @@ class MatchesByTeamListView(ListView):
 
 
 
-def scraper(request):
+def scraper_resultados(request):
     title = 'Scraper'
    
     leagues = League.objects.all()
@@ -125,6 +127,7 @@ def scraper(request):
     url = "https://www.resultados-futbol.com/"
     urls_match = []
     for league in leagues:
+        print(league)
         url_league = '{}{}'.format(url,league.slug)
         req = requests.get(url_league, headers = headers).text
         soup = BeautifulSoup(req, 'html.parser')
@@ -146,7 +149,16 @@ def scraper(request):
                     etiq_goles_ft = soup_match.find_all('span', {'class': 'claseR'})
                     home_gol_ft = etiq_goles_ft[0].text
                     visit_gol_ft = etiq_goles_ft[1].text
+                    # ------- obtener gol marcado en el trascurso del partido ---------
+                    etiq_goles = soup_match.find_all('td', {'class': 'mhr-marker'})
+                    goles = []
+                    for etiq in etiq_goles:
+                        etiq_gol = etiq.find('div').text
+                        goles.append([int(digito) for digito in etiq_gol if digito.isdigit()])
                     
+                    
+
+                    # ------- obtener minuto del gol marcado en el trascurso del partido ---------
                     etiq_min_gol = soup_match.find_all('td', {'class': 'mhr-min'})
                     
                     if etiq_min_gol != None:
@@ -156,14 +168,21 @@ def scraper(request):
                                 eliminar = "'"
                                 minutos_goles.append(int(etiq.text.replace(eliminar,"")))
                     
-                    print(minutos_goles)
-
-
                     
-                    
+
+                    # ------- calcular marcador en el descanso ---------
+                    marcador_ht = [0,0]
+                    for gol,min in zip(goles,minutos_goles):
+                        
+                        if min<=45:
+                            if gol[0]==marcador_ht[0]:
+                                marcador_ht[1]+=1
+                            else:
+                                marcador_ht[0]+=1
                     
                     #print(soccer_day)
-                    print('{} {} - {} {}'.format(home_team,home_gol_ft,visit_gol_ft,visit_team))
+                    
+                    print('{} {} ({})-({}) {} {}'.format(home_team,home_gol_ft, marcador_ht[0],marcador_ht[1],visit_gol_ft,visit_team))
 
                     
                     
@@ -175,7 +194,47 @@ def scraper(request):
 
         #req = requests.get(url)
 
-    return render(request, 'feeder/scraper.html', {
+    return render(request, 'feeder/scraper_score.html', {
+        'title': title,
+        
+    })
+
+
+
+def scraper_create_league(request):
+    title = 'Crear nueva liga'
+    leagues = League.objects.all()
+    
+    url = "https://www.resultados-futbol.com/"
+    urls_match = []
+    for league in leagues:
+        print(league.name)
+        if not Team.objects.filter(league=league):
+            url_league = '{}{}'.format(url,league.slug)
+            req = requests.get(url_league, headers = headers).text
+            soup = BeautifulSoup(req, 'html.parser')
+            tds_team = soup.find_all('td', {'class': 'equipo'})
+            for td_team in tds_team:
+                team = td_team.find('a').text
+                print(team)
+                etiq_img = td_team.find('img')
+                url_img = etiq_img['src']
+                # descargar la imagen del equipo
+                response_img = requests.get(url_img) # peticion a la url de la imagen
+                if response_img.status_code == 200:
+                    # guardamos la imagen
+                    ruta_completa = os.path.join(settings.MEDIA_ROOT, 'team/', "{}_img.jpg".format(team))
+                    with open(ruta_completa, "wb") as archivo:
+                        archivo.write(response_img.content)
+                        print(ruta_completa)
+                        print("¡La imagen del escudo del Arsenal se ha descargado correctamente!")
+                else:
+                    print("Error al descargar la imagen. Código de estado:", response_img.status_code)
+                print(url_img)
+                
+                # guardar datos en la tabla Team (team, league, image('team/nombre_archivo'))
+
+    return render(request, 'feeder/scraper_create_league.html', {
         'title': title,
         
     })
