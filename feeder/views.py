@@ -3,13 +3,16 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.db.models import Q
 from django.urls import reverse, reverse_lazy
+from datetime import datetime
 from django.conf import settings
 from bs4 import BeautifulSoup
 import os
+import re
+import unicodedata
 import requests
 from forecasts.models import Contry, League, Team, Match
 from feeder.forms import ContryForm, LeagueForm, TeamForm
-
+url = "https://www.resultados-futbol.com/"
 headers = {
     'Accept-Encoding': 'gzip, deflate, sdch',
     'Accept-Language': 'en-US,en;q=0.8',
@@ -19,6 +22,17 @@ headers = {
     'Cache-Control': 'max-age=0',
     'Connection': 'keep-alive',
 }
+
+# función que devuelve una cadena de texto sin acentos, simbolos y carecteres especiales, conservando
+# letras y espacios
+def limpiar_texto(texto):
+    
+    # Normalizamos la cadena para descomponer los caracteres con diacríticos
+    texto_normalizado = unicodedata.normalize('NFD', texto)
+    # Eliminamos los caracteres que no sean letras, números o espacios
+    texto_limpio = re.sub(r'[^a-zA-Z0-9\s.-]', '', texto_normalizado)
+    return texto_limpio
+
 
 
 # Create your views here.
@@ -113,7 +127,14 @@ class MatchesByTeamListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Partidos'
+        context['first_match'] = True
         return context
+
+
+# vista para obtener los proximos partidos de todas las ligas, ordenarlas por fechas y mostrarlas en la home
+
+
+
 
 # crear la vista para crear los equipos y los partidos de todas las jornadas haciendo web scraping
 
@@ -124,7 +145,7 @@ def scraper_resultados(request):
    
     leagues = League.objects.all()
 
-    url = "https://www.resultados-futbol.com/"
+    #url = "https://www.resultados-futbol.com/"
     urls_match = []
     for league in leagues:
         print(league)
@@ -201,12 +222,12 @@ def scraper_resultados(request):
 
 
 
-def scraper_create_league(request):
-    title = 'Crear nueva liga'
+def scraper_create_teams(request):
+    title = 'Crear Equipos de Ligas dadas de alta'
     leagues = League.objects.all()
     
-    url = "https://www.resultados-futbol.com/"
-    urls_match = []
+    #url = "https://www.resultados-futbol.com/"
+    
     for league in leagues:
         print(league.name)
         if not Team.objects.filter(league=league):
@@ -233,8 +254,205 @@ def scraper_create_league(request):
                 print(url_img)
                 
                 # guardar datos en la tabla Team (team, league, image('team/nombre_archivo'))
-
+                # creamos el objeto team
+                
+                team_obj = Team(team=team,league=league,image='team/{}_img.jpg'.format(team))
+                team_obj.save()
+                
     return render(request, 'feeder/scraper_create_league.html', {
         'title': title,
         
     })
+
+def scraper_create_matches(request):
+
+    title = 'Crear partidos de la liga'
+    leagues = League.objects.all()
+
+    for league in leagues:
+        if not Match.objects.filter(league=league):
+            j = 1           
+            teams = Team.objects.filter(league=league)
+            soccer_days = (len(teams)*2)-2 # numero de jornadas que hay en esa liga
+            while j<=soccer_days:
+                url_league = '{}{}/grupo1/jornada{}'.format(url,league.slug,j)
+                scraper_data_match(url_league, league, j)
+                j+=1
+
+    return render(request, 'feeder/scraper_create_matches.html', {
+            'title': title,
+            
+        })
+
+
+
+def scraper_data_match(url_league, league, soccer_day):
+    print(url_league)
+    #url_jor_league = '{}{}'.format(url,url_league)
+    req = requests.get(url_league, headers = headers).content.decode('utf-8')
+    soup = BeautifulSoup(req, 'html.parser')
+    home_gol_ft=None
+    visit_gol_ft=None
+    home_gol_ht=None
+    visit_gol_ht=None
+    etiq_table = soup.find('table', {'id': 'tabla1'})
+    if etiq_table.find_all('a', {'class': 'url'}) or etiq_table.find_all('a', {'class': 'hour'}):
+        etiq_aes_jugado = etiq_table.find_all('a', {'class': 'url'})   # todas las etiquetas a de partido jugado
+        etiq_aes_no_jugado = etiq_table.find_all('a', {'class': 'hour'})   # todas las etiquetas a de partido NO jugado
+    
+        urls_matches = []
+        for etiq_a_jugado in etiq_aes_jugado:   
+            urls_matches.append(etiq_a_jugado['href'])  # guardamos en urls_matches las url de los partidos jugados
+    
+        for etiq_a_no_jugado in etiq_aes_no_jugado:
+            urls_matches.append(etiq_a_no_jugado['href'])   # guardamos en urls_matches las url de los partidos no jugados
+
+        for url_match in urls_matches:  # iteramos la lista urls_matches para ir entrando en la url del partido para sacar los datos necesarios
+            url_completa_match = '{}{}'.format(url,url_match)
+            req_match = requests.get(url_completa_match, headers = headers).content.decode('utf-8')
+            soup_match = BeautifulSoup(req_match, 'html.parser')
+            # equipo local
+            
+            etiq_div_team1 = soup_match.find('div', {'class': 'team equipo1'})
+            try:
+                etiq_a_local_team = etiq_div_team1.find('a')
+                local_team = etiq_a_local_team.text
+            except:
+                local_team = etiq_div_team1.find('b').text
+                
+            # equipo visitante
+            etiq_div_team2 = soup_match.find('div', {'class': 'team equipo2'})
+            try:
+                away_team = etiq_div_team2.find('a').text
+            except:
+                away_team = etiq_div_team2.find('b').text
+            # fecha del partido    
+            date_span = soup_match.find('span',{'class': 'jor-date'})['content']
+            date_scraped = datetime.strptime(date_span, "%Y-%m-%dT%H:%M:%S%z")
+            date = date_scraped.strftime("%Y-%m-%d")
+            # resultado del partido
+            
+            etiq_div_resul = soup_match.find('div', {'class': 'resultado resultadoH'})
+            
+            if etiq_div_resul.find_all('span',{'class': 'claseR'}): # si hay un resultado en el marcador
+                etiq_span_gol = etiq_div_resul.find_all('span',{'class': 'claseR'})
+                home_gol_ft = etiq_span_gol[0].text
+                visit_gol_ft = etiq_span_gol[1].text
+                if home_gol_ft == 0 and visit_gol_ft == 0:
+                    home_gol_ht = 0
+                    visit_gol_ht = 0
+                else:
+                    if not home_gol_ft.isdigit():
+                        home_gol_ht = None
+                        home_gol_ft = None
+                    
+                    if not visit_gol_ft.isdigit():
+                        visit_gol_ht = None
+                        visit_gol_ft = None
+                
+                
+        
+                    # ------- obtener gol marcado en el trascurso del partido ---------
+                    goles = []
+                    if soup_match.find_all('td', {'class': 'mhr-marker'}):
+                        etiq_goles = soup_match.find_all('td', {'class': 'mhr-marker'})
+                        
+                        for etiq in etiq_goles:
+                            etiq_gol = etiq.find('div').text
+                            goles.append([int(digito) for digito in etiq_gol if digito.isdigit()])
+                
+                
+
+                        # ------- obtener minuto del gol marcado en el trascurso del partido ---------
+                        etiq_min_gol = soup_match.find_all('td', {'class': 'mhr-min'})
+                        
+                        if etiq_min_gol != None:
+                            minutos_goles = []
+                            for etiq in etiq_min_gol:
+                                if etiq.text != '':
+                                    eliminar = "'"
+                                    minutos_goles.append(int(etiq.text.replace(eliminar,"")))
+                    
+                    
+
+                        # ------- calcular marcador en el descanso ---------
+
+                        marcador_ht = [0,0]
+                        for gol,min in zip(goles,minutos_goles):
+                            
+                            if min<=45:
+                                if gol[0]==marcador_ht[0]:
+                                    marcador_ht[1]+=1
+                                else:
+                                    marcador_ht[0]+=1
+
+                
+                        home_gol_ht=marcador_ht[0]
+                        visit_gol_ht=marcador_ht[1]
+        
+
+            print(league)
+            print('jornada {}'.format(soccer_day))
+            print(date)
+            print('{} {} ({}) - ({}) {} {}'.format(local_team,home_gol_ft,home_gol_ht,visit_gol_ht,visit_gol_ft,away_team))
+        
+            home_team_format = limpiar_texto(local_team)
+            print(home_team_format)
+            home_team = Team.objects.get(team=home_team_format)
+            print(home_team)
+
+            visit_team_format = limpiar_texto(away_team)
+            print(visit_team_format)
+            visit_team = Team.objects.get(team=visit_team_format)
+            print(visit_team)
+
+            match_obj = Match(league=league,
+                            soccer_day=soccer_day,
+                            home_team=home_team,
+                            visit_team=visit_team,
+                            date=date,
+                            gol_home_ht=home_gol_ht,
+                            gol_visit_ht=visit_gol_ht,
+                            gol_home_ft=home_gol_ft,
+                            gol_visit_ft=visit_gol_ft
+                            )
+            match_obj.save()
+    else:
+        #etiq_span_no_jugado = etiq_table.find_all('span', {'class': 'clase'})
+        etiq_equipo_1 = etiq_table.find_all('td', {'class': 'equipo1'})
+        etiq_equipo_2 = etiq_table.find_all('td', {'class': 'equipo2'})
+        etiq_td_fecha = etiq_table.find_all('td', {'class': 'fecha'})
+
+        for equipo1,equipo2,fecha in zip(etiq_equipo_1,etiq_equipo_2,etiq_td_fecha):
+            # equipo local
+            etiq_a_equipo1 = equipo1.find_all('a')
+            local_team = etiq_a_equipo1[-1].text
+            # equipo visitante
+            etiq_a_equipo2 = equipo2.find_all('a')
+            away_team = etiq_a_equipo2[-1].text
+            # fecha del partido    
+            date_match = fecha['data-date']
+            date_scraped = datetime.strptime(date_match, "%a, %d %b %Y %H:%M:%S %z")
+            date = date_scraped.strftime("%Y-%m-%d")
+
+            home_team_format = limpiar_texto(local_team)
+            print(home_team_format)
+            home_team = Team.objects.get(team=home_team_format)
+            print(home_team)
+
+            visit_team_format = limpiar_texto(away_team)
+            print(visit_team_format)
+            visit_team = Team.objects.get(team=visit_team_format)
+            print(visit_team)
+
+            match_obj = Match(league=league,
+                            soccer_day=soccer_day,
+                            home_team=home_team,
+                            visit_team=visit_team,
+                            date=date,
+                            gol_home_ht=home_gol_ht,
+                            gol_visit_ht=visit_gol_ht,
+                            gol_home_ft=home_gol_ft,
+                            gol_visit_ft=visit_gol_ft
+                            )
+            match_obj.save()

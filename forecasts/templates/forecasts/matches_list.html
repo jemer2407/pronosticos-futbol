@@ -26,8 +26,16 @@
               <td>{{match.date}}</td>
               <td><img src="{{match.home_team.image.url}}" class="img-fluid" alt=""> {{match.home_team}}</td>
               <td><img src="{{match.visit_team.image.url}}" class="img-fluid" alt=""> {{match.visit_team}}</td>
-              <td>                      
-                <a href="{% url 'match-detail' match.id %}" class="btn btn-primary">Pronosticos</a>                  
+              <td>
+                
+                {% if first_match %}
+                  {% if forloop.first %}
+                    <a href="{% url 'match-detail' match.id %}" class="btn btn-primary">Pronosticos</a>
+                  {% endif %}
+                {% else %}
+                  <a href="{% url 'match-detail' match.id %}" class="btn btn-primary">Pronosticos</a>
+                {% endif %}
+
               </td>
             </tr>
           {% endfor %}

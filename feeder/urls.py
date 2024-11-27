@@ -12,6 +12,7 @@ urlpatterns = [
     path('team/create', views.TeamCreateView.as_view(), name="team-create"),
     path('match/team/<int:pk>', views.MatchesByTeamListView.as_view(), name="matches-team-list"),
     path('scraper/update-score', views.scraper_resultados, name="scraper-score"),
-    path('scraper/create-league', views.scraper_create_league, name="scraper-create-league"),
+    path('scraper/create-league', views.scraper_create_teams, name="scraper-create-league"),
+    path('scraper/create-matches', views.scraper_create_matches, name="scraper-create-matches"),
     
 ]

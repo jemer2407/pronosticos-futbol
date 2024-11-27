@@ -162,16 +162,37 @@ class NextMatchesListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Próximos partidos'
-        return context
-    
-    def get_queryset(self):
+
         league_id = get_object_or_404(League, id=self.kwargs['pk'])
 
-        unplayed_match = Match.objects.filter(league=league_id).filter(gol_home_ht=None)  # aqui obtengo los que no se han jugado aun
-        ten_matches = unplayed_match[:10]
+        unplayed_matches = Match.objects.filter(league=league_id,gol_home_ht=None)  # aqui obtengo los que no se han jugado aun
         
-        return ten_matches
+        # vamos a recorrer la lista de obj unplayed_match y vamos eliminar partidos en el que haya equipos que tengan
+        # ya un partido pendiente con fecha anterior
+        matches = []
+        print(type(unplayed_matches))
+        for unplayed_match in unplayed_matches:
+            encontrado = False
+            if len(matches) != 0:
+                for match in matches:
+                    if unplayed_match.home_team == match.home_team or unplayed_match.home_team == match.visit_team:
+                        encontrado = True
+                        #print('entra primer if')
+                    elif unplayed_match.visit_team == match.home_team or unplayed_match.visit_team == match.visit_team: 
+                        encontrado = True
+                        #print('entra segundo if')
 
+                if encontrado == False:
+                    #print('encontrado es false')        
+                    matches.append(unplayed_match)
+            else:
+        
+               matches.append(unplayed_match)
+        context['match_list'] = matches
+        
+        
+        return context
+    
 
 class MatchDetailView(DetailView):
     model = Match
