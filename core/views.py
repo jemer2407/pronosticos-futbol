@@ -5,8 +5,7 @@ from django.urls import reverse
 from .forms import ContactForm
 from django.core.mail import EmailMessage
 from forecasts.models import Match, Contry, League
-
-
+from forecasts.views import get_next_matches_league
 
 class HomeView(TemplateView):
     model = Match
@@ -17,6 +16,17 @@ class HomeView(TemplateView):
         context['title'] = 'Pronosticador Fútbol'
         leagues = League.objects.all()
         context['leagues'] = leagues
+        # proximos partidos de todas las ligas
+        next_unplayed_matches = []
+        for league in leagues:
+            unplayed_matches = Match.objects.filter(league=league.id,gol_home_ht=None)  # aqui obtengo los que no se han jugado aun
+            matches = get_next_matches_league(unplayed_matches)
+            next_unplayed_matches.append(matches)
+        # vamos a recorrer la lista de obj unplayed_match y vamos eliminar partidos en el que haya equipos que tengan
+        # ya un partido pendiente con fecha anterior
+        
+        
+        context['next_matches_leagues_list'] = next_unplayed_matches
 
 
         return context

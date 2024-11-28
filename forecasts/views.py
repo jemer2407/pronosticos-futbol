@@ -152,7 +152,28 @@ def calcular_num_match_1x2(m, option):
     
     return num_total_match_1x2, num_match_win,num_match_lose,num_match_empate
 
+def get_next_matches_league(unplayed_matches):
+    matches = []
+        
+    for unplayed_match in unplayed_matches:
+        encontrado = False
+        if len(matches) != 0:
+            for match in matches:
+                if unplayed_match.home_team == match.home_team or unplayed_match.home_team == match.visit_team:
+                    encontrado = True
+                    #print('entra primer if')
+                elif unplayed_match.visit_team == match.home_team or unplayed_match.visit_team == match.visit_team: 
+                    encontrado = True
+                    #print('entra segundo if')
 
+            if encontrado == False:
+                #print('encontrado es false')        
+                matches.append(unplayed_match)
+        else:
+    
+            matches.append(unplayed_match)
+
+    return matches
 # --------------------------- Create your views here ------------------------------
 
 class NextMatchesListView(ListView):
@@ -169,30 +190,15 @@ class NextMatchesListView(ListView):
         
         # vamos a recorrer la lista de obj unplayed_match y vamos eliminar partidos en el que haya equipos que tengan
         # ya un partido pendiente con fecha anterior
-        matches = []
-        print(type(unplayed_matches))
-        for unplayed_match in unplayed_matches:
-            encontrado = False
-            if len(matches) != 0:
-                for match in matches:
-                    if unplayed_match.home_team == match.home_team or unplayed_match.home_team == match.visit_team:
-                        encontrado = True
-                        #print('entra primer if')
-                    elif unplayed_match.visit_team == match.home_team or unplayed_match.visit_team == match.visit_team: 
-                        encontrado = True
-                        #print('entra segundo if')
-
-                if encontrado == False:
-                    #print('encontrado es false')        
-                    matches.append(unplayed_match)
-            else:
         
-               matches.append(unplayed_match)
+        matches = get_next_matches_league(unplayed_matches)
         context['match_list'] = matches
         
         
         return context
-    
+
+
+
 
 class MatchDetailView(DetailView):
     model = Match
