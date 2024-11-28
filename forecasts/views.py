@@ -169,8 +169,7 @@ def get_next_matches_league(unplayed_matches):
             if encontrado == False:
                 #print('encontrado es false')        
                 matches.append(unplayed_match)
-        else:
-    
+        else:    
             matches.append(unplayed_match)
 
     return matches
@@ -182,18 +181,12 @@ class NextMatchesListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Próximos partidos'
+        context['title'] = 'Próximos partidos de '
 
         league_id = get_object_or_404(League, id=self.kwargs['pk'])
-
         unplayed_matches = Match.objects.filter(league=league_id,gol_home_ht=None)  # aqui obtengo los que no se han jugado aun
-        
-        # vamos a recorrer la lista de obj unplayed_match y vamos eliminar partidos en el que haya equipos que tengan
-        # ya un partido pendiente con fecha anterior
-        
         matches = get_next_matches_league(unplayed_matches)
         context['match_list'] = matches
-        
         
         return context
 
@@ -203,6 +196,7 @@ class NextMatchesListView(ListView):
 class MatchDetailView(DetailView):
     model = Match
     template_name = 'forecasts/match_detail.html'
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -289,3 +283,4 @@ class MatchDetailView(DetailView):
         context['cuota_aem_ht2_no'] = np.round((1/(100 - prob_aem_ht2))*100,2)
 
         return context
+

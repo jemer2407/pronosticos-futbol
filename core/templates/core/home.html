@@ -7,7 +7,7 @@
 <!-- Content Row -->
 <div class="row">
     <div class="col">
-        <h1>{{title}}</h1>
+        <h1 class='mb-3 mt-3'>{{title}}</h1>
 
         <!-- Content Row -->
         <div class="row">
@@ -48,8 +48,8 @@
         </div>
         
         {% for league_unplayed in next_matches_leagues_list %}
-            <h2>Próximos partidos de {{league_unplayed.0.league}}</h2>
-            <table class="table">
+            <h2 class='mb-3 mt-3'>Próximos partidos de {{league_unplayed.0.league}}</h2>
+            <table class="table mt-3">
                 <thead>
                     <tr>
                     <th scope="col">Pais</th>

@@ -22,13 +22,9 @@ class HomeView(TemplateView):
             unplayed_matches = Match.objects.filter(league=league.id,gol_home_ht=None)  # aqui obtengo los que no se han jugado aun
             matches = get_next_matches_league(unplayed_matches)
             next_unplayed_matches.append(matches)
-        # vamos a recorrer la lista de obj unplayed_match y vamos eliminar partidos en el que haya equipos que tengan
-        # ya un partido pendiente con fecha anterior
-        
         
         context['next_matches_leagues_list'] = next_unplayed_matches
-
-
+        
         return context
 
 class AboutView(TemplateView):

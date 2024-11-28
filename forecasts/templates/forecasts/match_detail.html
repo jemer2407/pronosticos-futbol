@@ -11,8 +11,8 @@
         <img src="{{match.home_team.image.url}}" class="img-fluid" alt="">  {{match.home_team}} - 
         <img src="{{match.visit_team.image.url}}" class="img-fluid" alt="">  {{match.visit_team}}
     </h1>
-    
-        <div class='col-12'>
+
+        <div class='col-8'>
             <p>{{match.league.contry}} - {{match.league}} - {{match.date}}</p>
             
 
@@ -33,7 +33,53 @@
                     
                 </tbody>
             </table>
+        </div>
+        <div class='col-6 mt-3 mb-3'>
+            
+            <h5>Calculadora Probabilidad goles 2º Tiempo</h5>
+            <form action="" method="get">
+                {% csrf_token %}
+                <div class="row">
+                    
+                    <div class="col">
+                        {{match.home_team}}
+                        <input type="number" min=0 class="form-control" aria-label="home_gol_ht" id="home_gol_ht" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="col">
+                        {{match.visit_team}}
+                        <input type="number" min=0 class="form-control" aria-label="visit_gol_ht" id="visit_gol_ht" aria-describedby="basic-addon1"> 
+                    </div>
+                </div>
+                <p>* Introduce resultado al descanso</p>
+                <div class="col text-center mt-4">
+                    <a href="#" class="btn btn-primary text-center">Calcular probilidad</a>
+                </div>
+                <div>
+                    <table class="table table-striped mt-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">> 1 gol</th>
+                                <th scope="col">> 2 goles</th>
+                                <th scope="col">> 3 goles</th>
+                            </tr>
+                            </thead> 
+                            <tbody>
+                                <tr>
+                                    <td>cuota € (prob %)</td>
+                                    <td>cuota € (prob %)</td>
+                                    <td>cuota € (prob %)</td>
+                                </tr>
+                            
+                        </tbody>
+                    </table>
 
+                </div>
+                
+            </form>
+
+        </div>
+        <div class='col-8'>
+        
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -74,17 +120,13 @@
                             <td>{{cuota_under_35_ft}}€ ({{prob_under_35_ft}}%)</td>
                         </tr>
                         <tr>
-                            <td>0.5 goles 2ª mitad</td>
+                            <td>Gol 2ª mitad</td>
                             <td>{{cuota_over_05_mitad2}}€ ({{prob_over_05_mitad2}}%)</td>
                             <td>{{cuota_under_05_mitad2}}€ ({{prob_under_05_mitad2}}%)</td>
-                        </tr>
-                        <tr>
-                            <td>0.5 goles 2ª mitad</td>
-                            <td>{{cuota_over_05_mitad2}}€ ({{prob_over_05_mitad2}}%)</td>
-                            <td>{{cuota_under_05_mitad2}}€ ({{prob_under_05_mitad2}}%)</td>
-                        </tr>                    
+                        </tr>            
                 </tbody>
             </table>
+            
           
             <table class="table table-striped">
                 <thead>
@@ -113,7 +155,10 @@
                     
                 </tbody>
             </table>
+
         </div>
+        
+        
 </div>
     
 
