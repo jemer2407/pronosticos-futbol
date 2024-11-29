@@ -32,21 +32,14 @@
                                         {% else %}
                                             <i class="fa fa-futbol fa-2x text-gray-300"></i>
                                         {% endif %}
-
-                                            
-                                        
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </a>
                 </div>
-                
             {% endfor %}
-                
-            
         </div>
-        
         {% for league_unplayed in next_matches_leagues_list %}
             <h2 class='mb-3 mt-3'>Próximos partidos de {{league_unplayed.0.league}}</h2>
             <table class="table mt-3">
@@ -70,7 +63,6 @@
                         <td><img src="{{match.home_team.image.url}}" class="img-fluid" alt=""> {{match.home_team}}</td>
                         <td><img src="{{match.visit_team.image.url}}" class="img-fluid" alt=""> {{match.visit_team}}</td>
                         <td>
-                        
                         {% if first_match %}
                             {% if forloop.first %}
                             <a href="{% url 'match-detail' match.id %}" class="btn btn-primary">Pronosticos</a>
@@ -78,16 +70,12 @@
                         {% else %}
                             <a href="{% url 'match-detail' match.id %}" class="btn btn-primary">Pronosticos</a>
                         {% endif %}
-
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         {% endfor %}
-               
-        
     </div>
 </div>
-
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.http import Http404, JsonResponse
 import numpy as np
 from .models import Match, League
 
@@ -173,6 +174,14 @@ def get_next_matches_league(unplayed_matches):
             matches.append(unplayed_match)
 
     return matches
+
+# funcion que calcula la probabilidad de mas de 1, 2 ó 3 goles en el segundo tiempo teniendo en cuenta el resultado al descanso
+def calcular_prob_live(home_gol, visit_gol):
+
+    pass
+
+
+
 # --------------------------- Create your views here ------------------------------
 
 class NextMatchesListView(ListView):
@@ -284,3 +293,19 @@ class MatchDetailView(DetailView):
 
         return context
 
+def updateLive(request, pk):
+    json_response = {}
+    home_gol = request.GET.get('home_gol', None)
+    visit_gol = request.GET.get('visit_gol', None)
+    if home_gol and visit_gol:
+        # vamos a recuperar el partido
+        #match = get_object_or_404(Match, pk=pk)
+        #unGol, dosGoles, tresGoles = calcular_prob_live(home_gol, visit_gol)
+
+        json_response['prob_un_gol_mas'] = 70
+        json_response['prob_dos_goles_mas'] = 52
+        json_response['prob_tres_goles_mas'] = 31
+
+        return JsonResponse(json_response)
+    
+    

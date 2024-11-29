@@ -12,9 +12,8 @@
         <img src="{{match.visit_team.image.url}}" class="img-fluid" alt="">  {{match.visit_team}}
     </h1>
 
-        <div class='col-8'>
+        <div class='col-12'>
             <p>{{match.league.contry}} - {{match.league}} - {{match.date}}</p>
-            
 
             <table class="table table-striped">
                 <thead>
@@ -34,8 +33,8 @@
                 </tbody>
             </table>
         </div>
-        <div class='col-6 mt-3 mb-3'>
-            
+
+        <div class='col-12 mt-3 mb-3'>
             <h5>Calculadora Probabilidad goles 2º Tiempo</h5>
             <form action="" method="get">
                 {% csrf_token %}
@@ -52,7 +51,8 @@
                 </div>
                 <p>* Introduce resultado al descanso</p>
                 <div class="col text-center mt-4">
-                    <a href="#" class="btn btn-primary text-center">Calcular probilidad</a>
+                    <button id=id="btn-prob-gol-2ht" class="btn btn-primary btn-sm btn-block">Calcular probilidad</button>
+                    
                 </div>
                 <div>
                     <table class="table table-striped mt-3">
@@ -68,17 +68,45 @@
                                     <td>cuota € (prob %)</td>
                                     <td>cuota € (prob %)</td>
                                     <td>cuota € (prob %)</td>
-                                </tr>
-                            
+                                </tr>                            
                         </tbody>
                     </table>
-
-                </div>
-                
+                </div>                
             </form>
+            <script>
+                var btn_prob = document.getElementById('btn-prob-gol-2ht');
+                btn_prob.addEventListener('click', function(){
+                var home_gol_ht = document.getElementById('home_gol_ht').value;
+                var visit_gol_ht = document.getElementById('visit_gol_ht').value;
+            
+                if (home_gol_ht != '' && visit_gol_ht != ''){
+                    const url = "{% url 'update-live' match.pk %}" + "?home_gol="+home_gol_ht+"?visit_gol="+visit_gol_ht;
+                    const withFetchAsyncAwait = async() => {
+                        try {
+                            const response = await fetch(url)
+                            const data = await response.json()
+                            console.log(data)
+                        } catch (error){
+                            console.log(error)
+                        }
+                    }
+                    //console.log(home_gol_ht, visit_gol_ht)
+                }
+                else{
+                    console.log('introduce resultado al descanso')
+                }
 
+                })
+                  
+            
+                    
+                    
+                                
+                
+            </script>
         </div>
-        <div class='col-8'>
+        
+        <div class='col-12'>
         
             <table class="table table-striped">
                 <thead>
@@ -140,7 +168,7 @@
                         <tr>
                             <td>FT</td>
                             <td>{{cuota_aem_ft}}€ ({{prob_aem_ft}}%)</td>
-                            <td>{{cuota_aem_ft_no}}€ ({{prob_aem_ft_no}}</td>
+                            <td>{{cuota_aem_ft_no}}€ ({{prob_aem_ft_no}}%)</td>
                         </tr>
                         <tr>
                             <td>1ª mitad</td>
@@ -160,6 +188,8 @@
         
         
 </div>
+
+
     
 
 {% endblock %}
