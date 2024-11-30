@@ -36,8 +36,7 @@
 
         <div class='col-12 mt-3 mb-3'>
             <h5>Calculadora Probabilidad goles 2º Tiempo</h5>
-            <form action="" method="get">
-                {% csrf_token %}
+            
                 <div class="row">
                     
                     <div class="col">
@@ -51,7 +50,7 @@
                 </div>
                 <p>* Introduce resultado al descanso</p>
                 <div class="col text-center mt-4">
-                    <button id=id="btn-prob-gol-2ht" class="btn btn-primary btn-sm btn-block">Calcular probilidad</button>
+                    <button id="btn-prob-gol-2ht" class="btn btn-primary btn-sm btn-block">Calcular probilidad</button>
                     
                 </div>
                 <div>
@@ -65,43 +64,38 @@
                             </thead> 
                             <tbody>
                                 <tr>
-                                    <td>cuota € (prob %)</td>
-                                    <td>cuota € (prob %)</td>
-                                    <td>cuota € (prob %)</td>
+                                    <td id="prob1"></td>
+                                    <td id="prob2"></td>
+                                    <td id="prob3"></td>
                                 </tr>                            
                         </tbody>
                     </table>
                 </div>                
-            </form>
+            
             <script>
                 var btn_prob = document.getElementById('btn-prob-gol-2ht');
                 btn_prob.addEventListener('click', function(){
-                var home_gol_ht = document.getElementById('home_gol_ht').value;
-                var visit_gol_ht = document.getElementById('visit_gol_ht').value;
-            
-                if (home_gol_ht != '' && visit_gol_ht != ''){
-                    const url = "{% url 'update-live' match.pk %}" + "?home_gol="+home_gol_ht+"?visit_gol="+visit_gol_ht;
-                    const withFetchAsyncAwait = async() => {
-                        try {
-                            const response = await fetch(url)
-                            const data = await response.json()
-                            console.log(data)
-                        } catch (error){
-                            console.log(error)
-                        }
+                    var home_gol_ht = document.getElementById('home_gol_ht').value;
+                    var visit_gol_ht = document.getElementById('visit_gol_ht').value;
+                    
+                    if(home_gol_ht != '' && visit_gol_ht != ''){
+                        const url = "{% url 'update-live' match.pk %}" + "?home_gol_ht="+home_gol_ht+"&visit_gol_ht="+visit_gol_ht;
+                    
+                        fetch(url).then(response => response.json().then(function(data){
+                            
+                            document.getElementById('prob1').textContent = data.cuota_un_gol_mas + '€ ('+data.prob_un_gol_mas + '%)'
+                            document.getElementById('prob2').textContent = data.cuota_dos_goles_mas + '€ ('+data.prob_dos_goles_mas + '%)'
+                            document.getElementById('prob3').textContent = data.cuota_tres_goles_mas + '€ ('+data.prob_tres_goles_mas + '%)'
+                            
+                        }))
+                    
+                    }else{
+                        alert('Introduce resultado al descanso')
                     }
-                    //console.log(home_gol_ht, visit_gol_ht)
-                }
-                else{
-                    console.log('introduce resultado al descanso')
-                }
-
                 })
-                  
-            
-                    
-                    
-                                
+                
+                
+                              
                 
             </script>
         </div>

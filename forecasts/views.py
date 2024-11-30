@@ -175,12 +175,60 @@ def get_next_matches_league(unplayed_matches):
 
     return matches
 
-# funcion que calcula la probabilidad de mas de 1, 2 ó 3 goles en el segundo tiempo teniendo en cuenta el resultado al descanso
-def calcular_prob_live(home_gol, visit_gol):
+# funcion que calcula probabilidad de mas de 1, 2 ó 3 goles en el segundo tiempo teniendo en cuenta el resultado al descanso
+def calcula_over_2mitad(matches, goles_descanso, goles):
+    
+    num_total_partidos = 0
+    num_partidos_over = 0
+    # recorremos la lista de listas de partidos
+    
+    for match in matches:
+        for m in match:
+            # comprobamos si el número de goles al descanso es igual al numero de goles pasado por referencia
+            if (m.gol_home_ht + m.gol_visit_ht) == goles_descanso:
+                print('entra con {} goles'.format(m.gol_home_ht + m.gol_visit_ht))
+                num_total_partidos += 1
+                if (m.gol_home_ft + m.gol_visit_ft) - (m.gol_home_ht + m.gol_visit_ht) > goles:
+                    num_partidos_over += 1
+    return num_total_partidos, num_partidos_over
 
-    pass
 
+# funcion que devuelve la probabilidad de mas de 1, 2 ó 3 goles en el segundo tiempo teniendo en cuenta el resultado al descanso
+def get_prob_goles_2ht_live(goles_descanso,obj):
+    print(obj)
+    matches = []# lista para almacenar todos los partidos jugados de los dos equipos tanto como de local como de visitante
+    # Obtener estadísticas de los equipos
+    # local como local partidos jugados
+    home_home = Match.objects.filter(home_team=obj.home_team).filter(gol_home_ht__gt=-1)
+    matches.append(home_home)
+    # local como visitante partidos jugados
+    home_visit = Match.objects.filter(visit_team=obj.home_team).filter(gol_home_ht__gt=-1)
+    matches.append(home_visit)
+    # visitante como local partidos jugados
+    visit_home = Match.objects.filter(home_team=obj.visit_team).filter(gol_home_ht__gt=-1)
+    matches.append(visit_home)
+    # visitante como visitante partidos jugados
+    visit_visit = Match.objects.filter(visit_team=obj.visit_team).filter(gol_home_ht__gt=-1)
+    matches.append(visit_visit)
 
+    num_total_match_un_gol_mas,num_match_un_gol_mas = calcula_over_2mitad(matches, goles_descanso, 0)
+    num_total_match_dos_goles_mas,num_match_dos_goles_mas = calcula_over_2mitad(matches, goles_descanso, 1)
+    num_total_match_tres_goles_mas,num_match_tres_goles_mas = calcula_over_2mitad(matches, goles_descanso, 2)
+    
+    if num_total_match_un_gol_mas != 0:
+        prob_un_gol_mas = np.round(100 * num_match_un_gol_mas / num_total_match_un_gol_mas, 2)
+    else:
+        prob_un_gol_mas = 0
+    if num_total_match_dos_goles_mas != 0:
+        prob_dos_goles_mas = np.round(100 * num_match_dos_goles_mas / num_total_match_dos_goles_mas, 2)
+    else:
+        prob_dos_goles_mas = 0
+    if num_total_match_tres_goles_mas != 0:
+        prob_tres_goles_mas = np.round(100 * num_match_tres_goles_mas / num_total_match_tres_goles_mas, 2)
+    else:
+        prob_tres_goles_mas = 0
+    
+    return prob_un_gol_mas, prob_dos_goles_mas, prob_tres_goles_mas
 
 # --------------------------- Create your views here ------------------------------
 
@@ -294,18 +342,46 @@ class MatchDetailView(DetailView):
         return context
 
 def updateLive(request, pk):
-    json_response = {}
-    home_gol = request.GET.get('home_gol', None)
-    visit_gol = request.GET.get('visit_gol', None)
-    if home_gol and visit_gol:
+    json_response = {'created': False}
+    home_gol = request.GET.get('home_gol_ht', None)
+    
+    visit_gol = request.GET.get('visit_gol_ht', None)
+    
+    if home_gol != '' and visit_gol != '':
         # vamos a recuperar el partido
-        #match = get_object_or_404(Match, pk=pk)
-        #unGol, dosGoles, tresGoles = calcular_prob_live(home_gol, visit_gol)
+        print('{} goles equipo local'.format(type(home_gol)))
+        print('{} goles equipo visitante'.format(visit_gol))
+        goles_descanso = int(home_gol) + int(visit_gol)
+        print('Goles al descanso'.format(goles_descanso))
 
-        json_response['prob_un_gol_mas'] = 70
-        json_response['prob_dos_goles_mas'] = 52
-        json_response['prob_tres_goles_mas'] = 31
+        match = get_object_or_404(Match, pk=pk)
+        prob_un_gol_mas, prob_dos_goles_mas, prob_tres_goles_mas = get_prob_goles_2ht_live(goles_descanso,match)
+        if prob_un_gol_mas != 0:
+            cuota_un_gol_mas = np.round((1/prob_un_gol_mas)*100,2)
+        else:
+            cuota_un_gol_mas = 0
+        if prob_dos_goles_mas != 0:
+            cuota_dos_goles_mas = np.round((1/prob_dos_goles_mas)*100,2)
+        else:
+            cuota_dos_goles_mas = 0
+        if prob_tres_goles_mas != 0:
+            cuota_tres_goles_mas = np.round((1/prob_tres_goles_mas)*100,2)
+        else:
+            cuota_tres_goles_mas = 0
 
-        return JsonResponse(json_response)
+        print(home_gol)
+        print(visit_gol)
+        json_response['prob_un_gol_mas'] = prob_un_gol_mas
+        json_response['cuota_un_gol_mas'] = cuota_un_gol_mas
+        json_response['prob_dos_goles_mas'] = prob_dos_goles_mas
+        json_response['cuota_dos_goles_mas'] = cuota_dos_goles_mas
+        json_response['prob_tres_goles_mas'] = prob_tres_goles_mas
+        json_response['cuota_tres_goles_mas'] = cuota_tres_goles_mas
+        json_response['created'] = True
+        print(json_response)
+    else:
+        raise Http404('Introduce el resultado al descanso')
+
+    return JsonResponse(json_response)
     
     

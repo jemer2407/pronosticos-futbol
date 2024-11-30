@@ -12,6 +12,8 @@ import unicodedata
 import requests
 from forecasts.models import Contry, League, Team, Match
 from feeder.forms import ContryForm, LeagueForm, TeamForm
+
+
 url = "https://www.resultados-futbol.com/"
 headers = {
     'Accept-Encoding': 'gzip, deflate, sdch',
@@ -203,8 +205,22 @@ def scraper_resultados(request):
                     
                     #print(soccer_day)
                     
-                    print('{} {} ({})-({}) {} {}'.format(home_team,home_gol_ft, marcador_ht[0],marcador_ht[1],visit_gol_ft,visit_team))
 
+                    
+                    home_team_format = limpiar_texto(home_team)
+                    visit_team_format = limpiar_texto(visit_team)
+                    obj_local = Team.objects.get(team=home_team_format)
+                    obj_visit = Team.objects.get(team=visit_team_format)
+                    
+                    match_obj = Match.objects.get(home_team=obj_local.id,visit_team=obj_visit.id)
+                    if match_obj.gol_home_ht == None:
+                        match_obj.gol_home_ht = marcador_ht[0]
+                        match_obj.gol_visit_ht = marcador_ht[1]
+                        match_obj.gol_home_ft = home_gol_ft
+                        match_obj.gol_visit_ft = visit_gol_ft
+                        match_obj.save()
+                    else:
+                        print('{} - {} ya actualizado'.format(home_team_format, visit_team_format))
                     
                     
                 
