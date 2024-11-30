@@ -163,64 +163,71 @@ def scraper_resultados(request):
                 req_match = requests.get('{}{}'.format(url,a['href'].strip()), headers = headers).text
                 soup_match = BeautifulSoup(req_match,'html.parser')
                 etiq_soccer_day = soup_match.find('div', {'class': 'jornada'}).find('a')
-                if soup_match.find('span',{'class':"jor-status jor-finished"}).text == 'FINALIZADO':
-                    soccer_day = etiq_soccer_day.text[8:10]
-                    etiq_teams = soup_match.find('div',{'class': 'performers'}).find_all('h2')
-                    
-                    home_team = etiq_teams[0].text
-                    visit_team = etiq_teams[1].text
-                    etiq_goles_ft = soup_match.find_all('span', {'class': 'claseR'})
-                    home_gol_ft = etiq_goles_ft[0].text
-                    visit_gol_ft = etiq_goles_ft[1].text
-                    # ------- obtener gol marcado en el trascurso del partido ---------
-                    etiq_goles = soup_match.find_all('td', {'class': 'mhr-marker'})
-                    goles = []
-                    for etiq in etiq_goles:
-                        etiq_gol = etiq.find('div').text
-                        goles.append([int(digito) for digito in etiq_gol if digito.isdigit()])
-                    
-                    
 
-                    # ------- obtener minuto del gol marcado en el trascurso del partido ---------
-                    etiq_min_gol = soup_match.find_all('td', {'class': 'mhr-min'})
+                if soup_match.find('span',{'class':"jor-status jor-finished"}):
                     
-                    if etiq_min_gol != None:
-                        minutos_goles = []
-                        for etiq in etiq_min_gol:
-                            if etiq.text != '':
-                                eliminar = "'"
-                                minutos_goles.append(int(etiq.text.replace(eliminar,"")))
-                    
-                    
-
-                    # ------- calcular marcador en el descanso ---------
-                    marcador_ht = [0,0]
-                    for gol,min in zip(goles,minutos_goles):
+                    if soup_match.find('span',{'class':"jor-status jor-finished"}).text == 'FINALIZADO':
+                        soccer_day = etiq_soccer_day.text[8:10]
+                        etiq_teams = soup_match.find('div',{'class': 'performers'}).find_all('h2')
                         
-                        if min<=45:
-                            if gol[0]==marcador_ht[0]:
-                                marcador_ht[1]+=1
-                            else:
-                                marcador_ht[0]+=1
-                    
-                    #print(soccer_day)
-                    
+                        home_team = etiq_teams[0].text
+                        visit_team = etiq_teams[1].text
+                        etiq_goles_ft = soup_match.find_all('span', {'class': 'claseR'})
+                        home_gol_ft = etiq_goles_ft[0].text
+                        visit_gol_ft = etiq_goles_ft[1].text
+                        # ------- obtener gol marcado en el trascurso del partido ---------
+                        etiq_goles = soup_match.find_all('td', {'class': 'mhr-marker'})
+                        goles = []
+                        for etiq in etiq_goles:
+                            etiq_gol = etiq.find('div').text
+                            goles.append([int(digito) for digito in etiq_gol if digito.isdigit()])
+                        
+                        
 
-                    
-                    home_team_format = limpiar_texto(home_team)
-                    visit_team_format = limpiar_texto(visit_team)
-                    obj_local = Team.objects.get(team=home_team_format)
-                    obj_visit = Team.objects.get(team=visit_team_format)
-                    
-                    match_obj = Match.objects.get(home_team=obj_local.id,visit_team=obj_visit.id)
-                    if match_obj.gol_home_ht == None:
-                        match_obj.gol_home_ht = marcador_ht[0]
-                        match_obj.gol_visit_ht = marcador_ht[1]
-                        match_obj.gol_home_ft = home_gol_ft
-                        match_obj.gol_visit_ft = visit_gol_ft
-                        match_obj.save()
-                    else:
-                        print('{} - {} ya actualizado'.format(home_team_format, visit_team_format))
+                        # ------- obtener minuto del gol marcado en el trascurso del partido ---------
+                        etiq_min_gol = soup_match.find_all('td', {'class': 'mhr-min'})
+                        
+                        if etiq_min_gol != None:
+                            minutos_goles = []
+                            for etiq in etiq_min_gol:
+                                if etiq.text != '':
+                                    eliminar = "'"
+                                    minutos_goles.append(int(etiq.text.replace(eliminar,"")))
+                        
+                        
+
+                        # ------- calcular marcador en el descanso ---------
+                        marcador_ht = [0,0]
+                        for gol,min in zip(goles,minutos_goles):
+                            
+                            if min<=45:
+                                if gol[0]==marcador_ht[0]:
+                                    marcador_ht[1]+=1
+                                else:
+                                    marcador_ht[0]+=1
+                        
+                        #print(soccer_day)
+                        
+
+                        
+                        home_team_format = limpiar_texto(home_team)
+                        print(home_team)
+                        print(home_team_format)
+                        visit_team_format = limpiar_texto(visit_team)
+                        print(visit_team)
+                        print(visit_team_format)
+                        obj_local = Team.objects.get(team=home_team_format)
+                        obj_visit = Team.objects.get(team=visit_team_format)
+                        
+                        match_obj = Match.objects.get(home_team=obj_local.id,visit_team=obj_visit.id)
+                        if match_obj.gol_home_ht == None:
+                            match_obj.gol_home_ht = marcador_ht[0]
+                            match_obj.gol_visit_ht = marcador_ht[1]
+                            match_obj.gol_home_ft = home_gol_ft
+                            match_obj.gol_visit_ft = visit_gol_ft
+                            match_obj.save()
+                        else:
+                            print('{} - {} ya actualizado'.format(home_team_format, visit_team_format))
                     
                     
                 
