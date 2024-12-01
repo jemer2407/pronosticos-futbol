@@ -278,8 +278,8 @@ def scraper_create_teams(request):
                 
                 # guardar datos en la tabla Team (team, league, image('team/nombre_archivo'))
                 # creamos el objeto team
-                
-                team_obj = Team(team=team,league=league,image='team/{}_img.jpg'.format(team))
+                team_format = limpiar_texto(team)
+                team_obj = Team(team=team_format,league=league,image='team/{}_img.jpg'.format(team_format))
                 team_obj.save()
                 
     return render(request, 'feeder/scraper_create_league.html', {
