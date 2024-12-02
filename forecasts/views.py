@@ -4,6 +4,7 @@ from django.views.generic.detail import DetailView
 from django.http import Http404, JsonResponse
 import numpy as np
 from .models import Match, League
+from .forms import MatchesForm
 
 
 # ----------- funciones para calcular los diferentes mercados -----------------
@@ -384,4 +385,13 @@ def updateLive(request, pk):
 
     return JsonResponse(json_response)
     
-    
+
+def MatchesbyleaguesDate(request):
+    title = 'Listado personalizado de partidos'
+    matches_form = MatchesForm()
+
+
+    return render(request, 'forecasts/matches_leagues_date_list.html', {
+        'title': title,
+        'form': matches_form
+    })

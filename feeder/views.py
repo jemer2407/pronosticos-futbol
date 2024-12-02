@@ -310,8 +310,6 @@ def scraper_create_matches(request):
 
 
 def scraper_data_match(url_league, league, soccer_day):
-    print(url_league)
-    #url_jor_league = '{}{}'.format(url,url_league)
     req = requests.get(url_league, headers = headers).content.decode('utf-8')
     soup = BeautifulSoup(req, 'html.parser')
     home_gol_ft=None

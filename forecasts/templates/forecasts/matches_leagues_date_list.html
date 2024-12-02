@@ -1,0 +1,70 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+  <!-- Content Row -->
+  <div class="row">
+    <div class="col-12">
+    <h1 class='mb-3 mt-3'>{{title}}</h1>
+    </div>
+    <div class="col-6">
+        <form action="" method="post">
+            {% csrf_token %}
+              {{form.as_p}}
+              
+              <div class="text-center">
+                  <input type="submit" class="btn btn-primary btn-block py-2" value="Enviar">
+              </div>
+          </form>
+    </div>
+    
+        
+        
+        
+        
+        
+        
+        
+
+        
+        
+    </form>
+
+    <table class="table mt-3">
+      <thead>
+          <tr>
+            <th scope="col">Pais</th>
+            <th scope="col">Liga</th>
+            <th scope="col">Jornada</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Local</th>
+            <th scope="col">Visitante</th>
+          </tr>
+        </thead> 
+        <tbody>
+          {% for match in match_list %}
+            <tr>
+              <td><img src="{{match.league.contry.image.url}}" class="img-fluid" width=25px height=20px alt=""> </td>
+              <td>{{match.league}}</td>
+              <td>{{match.soccer_day}}</td>
+              <td>{{match.date}}</td>
+              <td><img src="{{match.home_team.image.url}}" class="img-fluid" alt=""> {{match.home_team}}</td>
+              <td><img src="{{match.visit_team.image.url}}" class="img-fluid" alt=""> {{match.visit_team}}</td>
+              <td>
+                
+                {% if first_match %}
+                  {% if forloop.first %}
+                    <a href="{% url 'match-detail' match.id %}" class="btn btn-primary">Pronosticos</a>
+                  {% endif %}
+                {% else %}
+                  <a href="{% url 'match-detail' match.id %}" class="btn btn-primary">Pronosticos</a>
+                {% endif %}
+
+              </td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+{% endblock %}
