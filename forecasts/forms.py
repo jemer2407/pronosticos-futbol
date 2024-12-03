@@ -1,20 +1,22 @@
 from django import forms
+from django_flatpickr.widgets import DatePickerInput, TimePickerInput, DateTimePickerInput
 from forecasts.models import Match, League
 
-class MatchesForm(forms.Form):
-    leagues_obj = League.objects.all()
-    leagues = {}
-    for league in leagues_obj:
-        leagues[league.id] = league.name
-        
 
-    print(leagues)
-    league = forms.MultipleChoiceField(label='Ligas', required=True, widget=forms.SelectMultiple(
-        choices=leagues,
-        attrs={'class': 'form-control'}
-    ))
-    date = forms.DateField(label='Fecha', required=True, widget=forms.DateInput(
-        attrs={'class': 'form-control', 'type': 'date', 'id':'id_date'}
-    ))
+
+class MatchesForm(forms.Form):
+    leagues = forms.MultipleChoiceField(choices=League.objects.all().values_list('id','name'),
+                            widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+                            required=False
+                            )
+    start_date = forms.DateField(required=True,
+                            widget=DatePickerInput(attrs={'class': 'form-control', 'type': 'date'}))
     
+    end_date = forms.DateField(required=True,
+                            widget=DatePickerInput(attrs={'class': 'form-control', 'type': 'date'}))
+    
+
+    
+
+                           
     

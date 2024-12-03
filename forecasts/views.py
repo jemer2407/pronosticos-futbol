@@ -350,11 +350,7 @@ def updateLive(request, pk):
     
     if home_gol != '' and visit_gol != '':
         # vamos a recuperar el partido
-        print('{} goles equipo local'.format(type(home_gol)))
-        print('{} goles equipo visitante'.format(visit_gol))
         goles_descanso = int(home_gol) + int(visit_gol)
-        print('Goles al descanso'.format(goles_descanso))
-
         match = get_object_or_404(Match, pk=pk)
         prob_un_gol_mas, prob_dos_goles_mas, prob_tres_goles_mas = get_prob_goles_2ht_live(goles_descanso,match)
         if prob_un_gol_mas != 0:
@@ -370,8 +366,7 @@ def updateLive(request, pk):
         else:
             cuota_tres_goles_mas = 0
 
-        print(home_gol)
-        print(visit_gol)
+        
         json_response['prob_un_gol_mas'] = prob_un_gol_mas
         json_response['cuota_un_gol_mas'] = cuota_un_gol_mas
         json_response['prob_dos_goles_mas'] = prob_dos_goles_mas
@@ -379,7 +374,7 @@ def updateLive(request, pk):
         json_response['prob_tres_goles_mas'] = prob_tres_goles_mas
         json_response['cuota_tres_goles_mas'] = cuota_tres_goles_mas
         json_response['created'] = True
-        print(json_response)
+        
     else:
         raise Http404('Introduce el resultado al descanso')
 
@@ -388,10 +383,26 @@ def updateLive(request, pk):
 
 def MatchesbyleaguesDate(request):
     title = 'Listado personalizado de partidos'
-    matches_form = MatchesForm()
-
-
+    
+    if request.method == 'POST':
+        form = MatchesForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            leagues_select = form.cleaned_data['leagues']
+            matches = Match.objects.filter(
+                date__range=(start_date, end_date),
+                league__id__in=leagues_select,
+                gol_home_ht=None)
+            return render(request, 'forecasts/matches_leagues_date_list.html', {
+                'title': title,
+                'form': form,
+                'matches': matches})
+    else:
+        form = MatchesForm()
     return render(request, 'forecasts/matches_leagues_date_list.html', {
-        'title': title,
-        'form': matches_form
-    })
+            'title': title,
+            'form': form})
+
+
+    
