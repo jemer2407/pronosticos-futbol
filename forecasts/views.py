@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 from django.http import Http404, JsonResponse
 import numpy as np
-from .models import Match, League
-from .forms import MatchesForm
+from .models import Match, League, Strategy
+from .forms import MatchesForm, StrategyForm
 
 
 # ----------- funciones para calcular los diferentes mercados -----------------
@@ -405,4 +407,16 @@ def MatchesbyleaguesDate(request):
             'form': form})
 
 
+# vista para crear estrategias siempre que el usuario haya iniciado la sesión
+class StrategyCreateView(CreateView):
+    model = Strategy
+    form_class = StrategyForm
+    template_name = 'forecasts/strategy_form.html'
+    success_url = reverse_lazy('strategy-list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Crear Estrategia'
+        return context
+    
     

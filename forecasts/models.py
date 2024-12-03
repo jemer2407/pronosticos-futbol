@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 # Create your models here. 
@@ -74,3 +75,74 @@ class Match(models.Model):
     
     def __str__(self):
         return '{} {}'.format(self.home_team, self.visit_team)
+
+
+class Strategy(models.Model):
+    name = models.CharField(max_length=150, verbose_name='Nombre')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Usuario')
+    over_05_ht = models.BooleanField()
+    valor_ini_over_05_ht = models.PositiveSmallIntegerField()
+    valor_fin_over_05_ht = models.PositiveSmallIntegerField()
+    over_15_ht = models.BooleanField()
+    valor_ini_over_15_ht = models.PositiveSmallIntegerField()
+    valor_fin_over_15_ht = models.PositiveSmallIntegerField()
+    over_05_ft = models.BooleanField()
+    valor_ini_over_05_ft = models.PositiveSmallIntegerField()
+    valor_fin_over_05_ft = models.PositiveSmallIntegerField()
+    over_15_ft = models.BooleanField()
+    valor_ini_over_15_ft = models.PositiveSmallIntegerField()
+    valor_fin_over_15_ft = models.PositiveSmallIntegerField()
+    over_25_ft = models.BooleanField()
+    valor_ini_over_25_ft = models.PositiveSmallIntegerField()
+    valor_fin_over_25_ft = models.PositiveSmallIntegerField()
+    aem = models.BooleanField()
+    valor_ini_aem = models.PositiveSmallIntegerField()
+    valor_fin_aem = models.PositiveSmallIntegerField()
+    local_anota_ft = models.BooleanField()
+    valor_ini_local_anota_ft = models.PositiveSmallIntegerField()
+    valor_fin_local_anota_ft = models.PositiveSmallIntegerField()
+    local_anota_mitad_1 = models.BooleanField()
+    valor_ini_local_anota_mitad_1 = models.PositiveSmallIntegerField()
+    valor_fin_local_anota_mitad_1 = models.PositiveSmallIntegerField()
+    local_anota_mitad_2 = models.BooleanField()
+    valor_ini_local_anota_mitad_2 = models.PositiveSmallIntegerField()
+    valor_fin_local_anota_mitad_2 = models.PositiveSmallIntegerField()
+    visitante_anota_ft = models.BooleanField()
+    valor_ini_visitante_anota_ft = models.PositiveSmallIntegerField()
+    valor_fin_visitante_anota_ft = models.PositiveSmallIntegerField()
+    visitante_anota_mitad_1 = models.BooleanField()
+    valor_ini_visitante_anota_mitad_1 = models.PositiveSmallIntegerField()
+    valor_fin_visitante_anota_mitad_1 = models.PositiveSmallIntegerField()
+    visitante_anota_mitad_2 = models.BooleanField()
+    valor_ini_visitante_anota_mitad_2 = models.PositiveSmallIntegerField()
+    valor_fin_visitante_anota_mitad_2 = models.PositiveSmallIntegerField()
+    local_concede_ft = models.BooleanField()
+    valor_ini_local_concede_ft = models.PositiveSmallIntegerField()
+    valor_fin_local_concede_ft = models.PositiveSmallIntegerField()
+    local_concede_mitad_1 = models.BooleanField()
+    valor_ini_local_concede_mitad_1 = models.PositiveSmallIntegerField()
+    valor_fin_local_concede_mitad_1 = models.PositiveSmallIntegerField()
+    local_concede_mitad_2 = models.BooleanField()
+    valor_ini_local_concede_mitad_2 = models.PositiveSmallIntegerField()
+    valor_fin_local_concede_mitad_2 = models.PositiveSmallIntegerField()
+    visitante_concede_ft = models.BooleanField()
+    valor_ini_visitante_concede_ft = models.PositiveSmallIntegerField()
+    valor_fin_visitante_concede_ft = models.PositiveSmallIntegerField()
+    visitante_concede_mitad_1 = models.BooleanField()
+    valor_ini_visitante_concede_mitad_1 = models.PositiveSmallIntegerField()
+    valor_fin_visitante_concede_mitad_1 = models.PositiveSmallIntegerField()
+    valor_ini_visitante_concede_mitad_2 = models.PositiveSmallIntegerField()
+    valor_fin_visitante_concede_mitad_2 = models.PositiveSmallIntegerField()
+    local_favorito = models.BooleanField()
+    valor_ini_local_favorito = models.PositiveSmallIntegerField()
+    valor_fin_local_favorito = models.PositiveSmallIntegerField()
+    visitante_favorito = models.BooleanField()
+    valor_ini_visitante_favorito = models.PositiveSmallIntegerField()
+    valor_fin_visitante_favorito = models.PositiveSmallIntegerField()
+
+    class Meta:
+        verbose_name = 'Estrategia'
+        verbose_name_plural = 'Estrategias'
+        
+    def __str__(self):
+        return self.name
