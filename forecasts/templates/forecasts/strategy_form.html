@@ -7,12 +7,200 @@
     <h1>{{title}}</h1>
   </div>
 </div>
-<div class="container">
-  <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
-    {{form.as_table}}
-    <input type="submit" class="btn btn-primary btn-block mt-3" value="Crear">
-  </form>
-</div>
+{% if form.errors %}
+    <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  {% for field in form %}
+    {% for error in field.errors %}
+      <div class="alert alert-danger">
+        {{ error }}
+      </div>
+    {% endfor %}
+  {% endfor %}
+
+<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+  <div class="container" id="cont_strategy">
+    <div class="row">
+      <div class="col-md-8 mb-3 mt-3">
+        {{form.name}}  
+      </div>
+    </div>
+  </div>
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-md-6 mb-3 mt-3">
+        <table class="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Mercado</th>
+              <th scope="col">Desde (%)</th>
+              <th scope="col">Hasta (%)</th>
+            </tr>
+          </thead> 
+          <tbody>
+            <tr>
+              <td>Over 0.5 HT</td>
+              <td>{{form.valor_ini_over_05_ht}}</td>
+              <td>{{form.valor_fin_over_05_ht}}</td>
+            </tr>
+            <tr>
+              <td>Over 1.5 HT</td>
+              <td>{{form.valor_ini_over_15_ht}}</td>
+              <td>{{form.valor_fin_over_15_ht}}</td>
+            </tr>
+            <tr>
+              <td>Over 1.5 HT</td>
+              <td>{{form.valor_ini_over_15_ht}}</td>
+              <td>{{form.valor_fin_over_15_ht}}</td>
+            </tr>
+            <tr>
+              <td>Over 0.5 FT</td>
+              <td>{{form.valor_ini_over_05_ft}}</td>
+              <td>{{form.valor_fin_over_05_ft}}</td>
+            </tr>
+            <tr>
+              <td>Over 1.5 FT</td>
+              <td>{{form.valor_ini_over_15_ft}}</td>
+              <td>{{form.valor_fin_over_15_ft}}</td>
+            </tr>
+            <tr>
+              <td>Over 2.5 FT</td>
+              <td>{{form.valor_ini_over_25_ft}}</td>
+              <td>{{form.valor_fin_over_25_ft}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Mercado</th>
+              <th scope="col">Desde (%)</th>
+              <th scope="col">Hasta (%)</th>
+            </tr>
+          </thead> 
+          <tbody>
+            <tr>
+              <td>Ambos Equipos Marcan</td>
+              <td>{{form.valor_ini_aem}}</td>
+              <td>{{form.valor_fin_aem}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Mercado</th>
+              <th scope="col">Desde (%)</th>
+              <th scope="col">Hasta (%)</th>
+            </tr>
+          </thead> 
+          <tbody>
+            <tr>
+              <td>Local favorito</td>
+              <td>{{form.valor_ini_local_favorito}}</td>
+              <td>{{form.valor_fin_local_favorito}}</td>
+            </tr>
+            <tr>
+              <td>Visitante favorito</td>
+              <td>{{form.valor_ini_visitante_favorito}}</td>
+              <td>{{form.valor_fin_visitante_favorito}}</td>
+            </tr>
+            
+          </tbody>
+        </table>
 
 
+      </div>
+
+      <div class="col-md-6 mb-3 mt-3">
+        
+        <table class="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Mercado</th>
+              <th scope="col">Desde (%)</th>
+              <th scope="col">Hasta (%)</th>
+            </tr>
+          </thead> 
+          <tbody>
+            <tr>
+              <td>Local anota gol FT</td>
+              <td>{{form.valor_ini_local_anota_ft}}</td>
+              <td>{{form.valor_fin_local_anota_ft}}</td>
+            </tr>
+            <tr>
+              <td>Local anota gol 1ª mitad</td>
+              <td>{{form.valor_ini_local_anota_mitad_1}}</td>
+              <td>{{form.valor_fin_local_anota_mitad_1}}</td>
+            </tr>
+            <tr>
+              <td>Local anota gol 2ª mitad</td>
+              <td>{{form.valor_ini_local_anota_mitad_2}}</td>
+              <td>{{form.valor_fin_local_anota_mitad_2}}</td>
+            </tr>
+            <tr>
+              <td>Visitante anota gol FT</td>
+              <td>{{form.valor_ini_visitante_anota_ft}}</td>
+              <td>{{form.valor_fin_visitante_anota_ft}}</td>
+            </tr>
+            <tr>
+              <td>Visitante anota gol 1ª mitad</td>
+              <td>{{form.valor_ini_visitante_anota_mitad_1}}</td>
+              <td>{{form.valor_fin_visitante_anota_mitad_1}}</td>
+            </tr>
+            <tr>
+              <td>Visitante anota gol 2ª mitad</td>
+              <td>{{form.valor_ini_visitante_anota_mitad_2}}</td>
+              <td>{{form.valor_fin_visitante_anota_mitad_2}}</td>
+            </tr>
+            <tr>
+              <td>Local concede gol FT</td>
+              <td>{{form.valor_ini_local_concede_ft}}</td>
+              <td>{{form.valor_fin_local_concede_ft}}</td>
+            </tr>
+            <tr>
+              <td>Local concede gol 1ª mitad</td>
+              <td>{{form.valor_ini_local_concede_mitad_1}}</td>
+              <td>{{form.valor_fin_local_concede_mitad_1}}</td>
+            </tr>
+            <tr>
+              <td>Local concede gol 2ª mitad</td>
+              <td>{{form.valor_ini_local_concede_mitad_2}}</td>
+              <td>{{form.valor_fin_local_concede_mitad_2}}</td>
+            </tr>
+            <tr>
+              <td>Visitante concede gol FT</td>
+              <td>{{form.valor_ini_visitante_concede_ft}}</td>
+              <td>{{form.valor_fin_visitante_concede_ft}}</td>
+            </tr>
+            <tr>
+              <td>Visitante concede gol 1ª mitad</td>
+              <td>{{form.valor_ini_visitante_concede_mitad_1}}</td>
+              <td>{{form.valor_fin_visitante_concede_mitad_1}}</td>
+            </tr>
+            <tr>
+              <td>Visitante concede gol 2ª mitad</td>
+              <td>{{form.valor_ini_visitante_concede_mitad_2}}</td>
+              <td>{{form.valor_fin_visitante_concede_mitad_2}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="row justify-content-center mb-3">
+      <div class="col-md-6">
+        {% if not object %}
+          <input type="submit" class="btn btn-primary btn-block mt-3" value="Crear">
+        {% else %}
+          <input type="submit" class="btn btn-primary btn-block mt-3" value="Actualizar">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</form>
 {% endblock %}

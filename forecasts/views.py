@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import Http404, JsonResponse
 import numpy as np
+from django.contrib import messages
 from .models import Match, League, Strategy
 from .forms import MatchesForm, StrategyForm
 
@@ -407,16 +409,62 @@ def MatchesbyleaguesDate(request):
             'form': form})
 
 
-# vista para crear estrategias siempre que el usuario haya iniciado la sesión
-class StrategyCreateView(CreateView):
+# vista para crear estrategias siempre que el usuario esté logueado
+class StrategyCreateView(LoginRequiredMixin, CreateView):
     model = Strategy
     form_class = StrategyForm
     template_name = 'forecasts/strategy_form.html'
-    success_url = reverse_lazy('strategy-list')
+    success_url = reverse_lazy('strategies-list')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Crear Estrategia'
         return context
     
+    def form_valid(self, form):
+        
+        # Asociamos la estrategia al usuario logueado
+        form.instance.user = self.request.user
+        # Llamamos a la función original para guardar la estrategia
+        response = super().form_valid(form)
+
+        # Agregar mensaje de éxito
+        messages.success(self.request, 'Estrategia creada exitosamente.')
+
+        return response
+
+# Vista para listar las estrategias de un usuario logueado
+class StrategiesListView(ListView):
+    model = Strategy
+    #template_name = 'patients/patients_professional_list.html'
+    template_name = 'forecasts/strategies_list.html'
+
+    def get_queryset(self):
+        return Strategy.objects.filter(user=self.request.user)
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Mis Estrategias' 
+        return context
+    
+    
+class StrategyUpdateView(UpdateView):
+    model = Strategy
+    form_class = StrategyForm
+    template_name = 'forecasts/strategy_form.html'
+    success_url = reverse_lazy('strategies-list')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Editar Estrategia'
+        return context
+
+# vista para eliminar una estrategia
+class StrategyDeleteView(DeleteView):
+    model = Strategy
+    template_name = 'forecasts/strategy_confirm_delete.html'
+    success_url = reverse_lazy('strategies-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Eliminar estrategia'
+        return context

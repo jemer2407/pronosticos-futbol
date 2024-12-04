@@ -61,38 +61,40 @@
                 Interface
             </div>
             {% if request.user.is_authenticated %}
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMiEspacio"
-                    aria-expanded="true" aria-controls="collapseMiEspacio">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Mi espacio</span>
-                </a>
-                <div id="collapseMiEspacio" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Estrategias</h6>
-                        <a class="collapse-item" href="{% url 'strategy-create' %}">crear estrategia</a>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMiEspacio"
+                        aria-expanded="true" aria-controls="collapseMiEspacio">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>Mi espacio</span>
+                    </a>
+                    <div id="collapseMiEspacio" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Estrategias</h6>
+                            <a class="collapse-item" href="{% url 'strategies-list' %}">Mis Estrategias</a>
+                        </div>
                     </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Administrador</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Mantenimiento</h6>
-                        <a class="collapse-item" href="{% url 'scraper-score' %}">Actualizar Resultados</a>
-                        <a class="collapse-item" href="{% url 'scraper-create-league' %}">Nueva Liga</a>
-                        <a class="collapse-item" href="{% url 'scraper-create-matches' %}">Nuevos Partidos</a>
+                </li>
+                
+                {% if request.user.is_staff %}
+                    <!-- Nav Item - Pages Collapse Menu -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                        aria-expanded="true" aria-controls="collapseTwo">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>Administrador</span>
+                    </a>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Mantenimiento</h6>
+                            <a class="collapse-item" href="{% url 'scraper-score' %}">Actualizar Resultados</a>
+                            <a class="collapse-item" href="{% url 'scraper-create-league' %}">Nueva Liga</a>
+                            <a class="collapse-item" href="{% url 'scraper-create-matches' %}">Nuevos Partidos</a>
+                        </div>
                     </div>
-                </div>
-            </li>
-
-            
+                </li>
+                {% endif %}
+                    
+                
             {% endif %}
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">

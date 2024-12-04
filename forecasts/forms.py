@@ -41,7 +41,7 @@ class StrategyForm(forms.ModelForm):
             'valor_ini_visitante_favorito','valor_fin_visitante_favorito']
                 
         widgets = {
-            'name' : forms.TextInput(attrs={'class':'form-control'}),
+            'name' : forms.TextInput(attrs={'class':'form-control', 'placeholder':'Introduce un nombre para la estrategia'}),
             
             'valor_ini_over_05_ht': forms.NumberInput(attrs={'class':'form-control',
                                                    'min':'0',
@@ -167,7 +167,7 @@ class StrategyForm(forms.ModelForm):
             
         }
         labels = {
-            'name' : 'Nombre',            
+            'name' : '',            
             'valor_ini_over_05_ht': 'Over 0.5 HT desde (%)',
             'valor_fin_over_05_ht': 'Over 0.5 HT hasta (%)',
             'valor_ini_over_15_ht': 'Over 1.5 HT desde (%)',
@@ -207,10 +207,20 @@ class StrategyForm(forms.ModelForm):
             'valor_ini_local_favorito': 'Local favorito desde (%)',
             'valor_fin_local_favorito': 'Local favorito hasta (%)',
             'valor_ini_visitante_favorito': 'Visitante favorito desde (%)',
-            'valor_fin_visitante_favorito': 'Visitante favorito hasta (%)',
-            
+            'valor_fin_visitante_favorito': 'Visitante favorito hasta (%)'            
         }
+    def clean(self):
+        cleaned_data = super().clean()
 
+        # Validación de valores iniciales y finales
+        for field_name in ['over_05_ht', 'over_15_ht', 'over_05_ft', 'over_15_ft', 'over_25_ft', 'aem', 'local_anota_ft', 'local_anota_mitad_1', 'local_anota_mitad_2', 'visitante_anota_ft', 'visitante_anota_mitad_1', 'visitante_anota_mitad_2', 'local_concede_ft', 'local_concede_mitad_1', 'local_concede_mitad_2', 'visitante_concede_ft', 'visitante_concede_mitad_1', 'visitante_concede_mitad_2', 'local_favorito', 'visitante_favorito']:
+            valor_ini = cleaned_data.get(f'valor_ini_{field_name}')
+            valor_fin = cleaned_data.get(f'valor_fin_{field_name}')
+
+            if valor_ini and valor_fin and valor_ini > valor_fin:
+                raise forms.ValidationError(f"El valor inicial de {field_name} debe ser menor o igual al valor final.")
+
+        return cleaned_data
     
 
                            
