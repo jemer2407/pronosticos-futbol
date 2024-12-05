@@ -34,8 +34,6 @@ class AboutView(TemplateView):
             'title': 'Sobre nosotros'
         })
     
-
-
 def contact(request):
     title = 'Contacto'
    

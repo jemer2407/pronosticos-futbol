@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django_flatpickr",
     # apps propias
     'core',
+    'emailmarketing',
     'feeder',
     'forecasts',
     'pages',

@@ -40,7 +40,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Pronosticador</div>
+                <div class="sidebar-brand-text mx-3">EstrateBet</div>
             </a>
 
             <!-- Divider -->
@@ -56,15 +56,11 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Interface
-            </div>
             {% if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMiEspacio"
                         aria-expanded="true" aria-controls="collapseMiEspacio">
-                        <i class="fas fa-fw fa-cog"></i>
+                        <i class="fa fa-user-circle" aria-hidden="true"></i>
                         <span>Mi espacio</span>
                     </a>
                     <div id="collapseMiEspacio" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -91,6 +87,14 @@
                             <a class="collapse-item" href="{% url 'scraper-create-matches' %}">Nuevos Partidos</a>
                         </div>
                     </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Newsletter</h6>
+                            <a class="collapse-item" href="{% url 'subscribers-list' %}">Suscriptores</a>
+                            <a class="collapse-item" href="{% url 'campaign-email-form' %}">Campaña</a>
+                            
+                        </div>
+                    </div>
                 </li>
                 {% endif %}
                     
@@ -100,8 +104,8 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Utilidades</span>
+                    <i class="fa fa-list" aria-hidden="true"></i>
+                    <span>Listados</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
@@ -109,7 +113,7 @@
                         <h6 class="collapse-header">Listado</h6>
                         <a class="collapse-item" href="{% url 'contry-list' %}">Paises</a>
                         <a class="collapse-item" href="{% url 'league-list' %}">Ligas</a>
-                        <a class="collapse-item" href="{% url 'matches-leagues-date-list' %}">Personalizado partidos</a>
+                        <a class="collapse-item" href="{% url 'matches-leagues-date-list' %}">Partidos Personalizados</a>
                     </div>
                 </div>
             </li>
@@ -118,31 +122,7 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Addons
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="#">Login</a>
-                        <a class="collapse-item" href="#">Register</a>
-                        <a class="collapse-item" href="#">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="#">404 Page</a>
-                        <a class="collapse-item" href="#">Blank Page</a>
-                    </div>
-                </div>
-            </li>
+            
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
@@ -170,7 +150,7 @@
             <div class="sidebar-card d-none d-lg-flex">
                 <img class="sidebar-card-illustration mb-2" src="{% static 'core/img/undraw_rocket.svg' %}" alt="...">
                 <p class="text-center mb-2"><strong>Pronosticador Fútbol Pro</strong> próximamente con más utilidades!</p>
-                <a class="btn btn-success btn-sm" href="#">Estoy interesado!</a>
+                <a class="btn btn-success btn-sm" href="{% url 'subscriber-create' %}">Estoy interesado!</a>
             </div>
 
         </ul>
@@ -264,7 +244,7 @@
                     {% for page in pages %}
                     <a href="{% url 'page' page.id page.title|slugify %}" class="link">{{page.title}}</a>{% if not forloop.last %} - {% endif %}
                     {% endfor %}
-                    <p class='mt-2'><span>Copyright &copy; Pronosticador Fútbol 2024</span></p>
+                    <p class='mt-2'><span>Copyright &copy; EstrateBet 2024</span></p>
                 </div>
             </div>
         </footer>

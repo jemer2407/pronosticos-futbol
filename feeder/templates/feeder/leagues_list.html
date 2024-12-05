@@ -5,14 +5,15 @@
 <div class="row">
   <div class="col">
       <h1>{{title}}</h1>
-
-      <div class="container text-center">
-        <div class="row ">
-          <div class="col mb-5">
-            <a href="{% url 'league-create' %}" class="btn btn-success" id="btn-update-professional">Nueva Liga</a>
+      {% if request.user.is_authenticated %}
+        <div class="container text-center">
+          <div class="row ">
+            <div class="col mb-5">
+              <a href="{% url 'league-create' %}" class="btn btn-success" id="btn-update-professional">Nueva Liga</a>
+            </div>
           </div>
         </div>
-      </div>
+      {% endif %}
 
       <!-- Content Row -->
       <div class="row">

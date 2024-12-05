@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+  <!-- Doctors Section -->
+  
+  <section id="doctors" class="doctors section">
+
+    <!-- Section Title -->
+    <div class="container section-title">
+      <h2>{{title}}</h2>
+    </div><!-- End Section Title -->
+
+    <div class="container text-center">
+      <div class="row ">
+        {% if 'ok' in request.GET %}
+            <p><b>Campaña enviada correctamente</b></p>
+        {% endif %}
+        <div class="col">
+            <a href="{% url 'subscriber-maintenance-create' %}" class="btn btn-success">Crear Suscriptor</a>
+            <a href="{% url 'campaign-email-form' %}" class="btn btn-secondary">Crear Campaña</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-5">
+      <div class="row gy-4">
+        <table class="table">
+          <thead>
+              <tr>
+                <th scope="col">Email</th>
+                <th scope="col">Acción</th>
+              </tr>
+            </thead> 
+            <tbody>
+              {% for subscriber in subscriber_list %}
+                  <tr>
+                    <td>{{subscriber.email}}</td>
+                    <td>                      
+                      <a href="{% url 'subscriber-update' subscriber.id %}" class="btn btn-primary">Editar</a>
+                      <a href="{% url 'subscriber-delete' subscriber.id %}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section><!-- /Doctors Section -->
+
+{% endblock %}
