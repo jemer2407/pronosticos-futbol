@@ -40,7 +40,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">EstrateBet</div>
+                <div class="sidebar-brand-text mx-3">Estratebet - Versión Beta</div>
             </a>
 
             <!-- Divider -->
@@ -149,7 +149,7 @@
             <!-- Sidebar Message -->
             <div class="sidebar-card d-none d-lg-flex">
                 <img class="sidebar-card-illustration mb-2" src="{% static 'core/img/undraw_rocket.svg' %}" alt="...">
-                <p class="text-center mb-2"><strong>Pronosticador Fútbol Pro</strong> próximamente con más utilidades!</p>
+                <p class="text-center mb-2"><strong>Estratebet - Versión 1.0</strong> próximamente con más utilidades y ligas!</p>
                 <a class="btn btn-success btn-sm" href="{% url 'subscriber-create' %}">Estoy interesado!</a>
             </div>
 
@@ -205,7 +205,7 @@
                                 <a href="{% url 'login' %}">Acceder</a>
                             </li>
                         {% else %}
-                            <form id="logout-form" method="post" action="{% url 'login' %}">
+                            <form id="logout-form" method="post" action="{% url 'logout' %}">
                                 {% csrf_token %}
                                 <button type="submit" class="d-none d-sm-inline-block btn btn-link">Salir</button>
                             </form>

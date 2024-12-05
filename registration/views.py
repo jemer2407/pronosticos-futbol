@@ -1,12 +1,14 @@
 #from django.contrib.auth.forms import UserCreationForm  # formulario generico de django para el registro de usuarios
 from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
+from django.shortcuts import redirect
 from .forms import UserCreationFormWithEmail
 
 from django.views.generic import CreateView # Clase de la que vamos a heredar para crear una vista de Creación de un registro
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.views.generic.edit import UpdateView
 from django import forms
 
@@ -46,5 +48,3 @@ class SignUpView(CreateView):
             'placeholder':'Repita contraseña'
             })
         return form
-
-
