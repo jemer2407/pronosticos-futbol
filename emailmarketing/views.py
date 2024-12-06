@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -8,6 +8,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import EmailMessage
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
+from django.http import Http404, JsonResponse
 from .models import Subscriber
 from .forms import SuscriberForm, EmailMarketingForm
 
@@ -21,6 +22,24 @@ class SubscriberCreateView(SuccessMessageMixin, CreateView):
     success_message = "Gracias por suscribirte a nuestra newsletter"
     success_url = reverse_lazy('home')
 
+
+def subscriberView(request):
+    json_response = {'created': False}
+    
+    email = request.GET.get('email')
+    print(email)
+    if email != '':
+        if not Subscriber.objects.filter(email=email):
+            suscriber = Subscriber(email=email)
+            suscriber.save()
+            json_response['created'] = True
+            json_response['message'] = 'Gracias por subscribirte a la newsletter'
+        else:
+            json_response['message'] = 'El email introducido ya existe para otro usuario'
+    else:
+        json_response['message'] = 'Introduce un email'
+    return JsonResponse(json_response)
+    
 
 # vista privada para listar los suscritores de la newsletter
 @method_decorator(staff_member_required, name='dispatch')
