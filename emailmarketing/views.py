@@ -27,7 +27,7 @@ def subscriberView(request):
     json_response = {'created': False}
     
     email = request.GET.get('email')
-    print(email)
+    
     if email != '':
         if not Subscriber.objects.filter(email=email):
             suscriber = Subscriber(email=email)
@@ -93,7 +93,8 @@ class SubscriberDeleteView(DeleteView):
         return context
 
 # vista para la campaña de email marketing
-@method_decorator(staff_member_required, name='dispatch')
+# ver https://docs.djangoproject.com/en/5.1/topics/auth/default/
+@staff_member_required
 def emailMarketing(request):
 
     title = 'Campaña Email Marketing'

@@ -19,8 +19,7 @@
         {% endif %}
         <!-- Content Row -->
         <div class="row">
-            <!-- Earnings (Monthly) Card Example -->
-            
+            <!-- tarjetas para ligas -->
             {% for league in leagues %}
                 <div class="col-xl-3 col-md-6 mb-4">
                     <a href="{% url 'next-matchs-list' league.id %}">
@@ -47,7 +46,22 @@
                     </a>
                 </div>
             {% endfor %}
+
         </div>
+        
+        {% comment %}
+        {% if request.user.is_authenticated %}
+            
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                {% for strategy in strategies_obj %}
+                    <option value='{{strategy.id}}'>{{strategy.name}}</option>
+                {% endfor %}
+            </select>
+        {% endif %}    
+        {% endcomment %}
+            
+        
+
         {% for league_unplayed in next_matches_leagues_list %}
             <h2 class='mb-3 mt-3'>Próximos partidos de {{league_unplayed.0.league}}</h2>
             <table class="table mt-3">

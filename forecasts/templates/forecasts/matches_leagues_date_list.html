@@ -24,17 +24,31 @@
             <div class="col-3">
               <div class="form-group">
                 {{ form.end_date }}
-              </div>
-              
+              </div>              
             </div>
-            <button type="submit" class="btn btn-primary">Filtrar</button>
-            
+            <div class="col-8 mb-3">
+              <button type="submit" class="btn btn-primary" id="btn-filtrar">Filtrar</button>
+            </div>
           </div>
         </div>
-        
       </form>
+      
+      {% if matches %}
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="col-8 mb-3">
+            <label for="">Selecciona una Estrategia</label>
+            {{form_strategy.strategies}}
+          </div>
+          <div class="col-8 mb-3">
+            <button type="submit" class="btn btn-success" id="btn-apli-strategy">Aplicar Estrategia</button>
+          </div>
+        </form>
+      {% endif %}
 
-
+      
+        
+      
       <table class="table mt-3">
         <thead>
           <tr>

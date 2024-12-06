@@ -80,21 +80,15 @@
                         const url = "{% url 'update-live' match.pk %}" + "?home_gol_ht="+home_gol_ht+"&visit_gol_ht="+visit_gol_ht;
                     
                         fetch(url).then(response => response.json().then(function(data){
-                            
                             document.getElementById('prob1').textContent = data.cuota_un_gol_mas + '€ ('+data.prob_un_gol_mas + '%)'
                             document.getElementById('prob2').textContent = data.cuota_dos_goles_mas + '€ ('+data.prob_dos_goles_mas + '%)'
                             document.getElementById('prob3').textContent = data.cuota_tres_goles_mas + '€ ('+data.prob_tres_goles_mas + '%)'
-                            
                         }))
                     
                     }else{
                         alert('Introduce resultado al descanso')
                     }
                 })
-                
-                
-                              
-                
             </script>
         </div>
         

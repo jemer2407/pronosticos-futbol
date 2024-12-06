@@ -8,7 +8,7 @@ from django.http import Http404, JsonResponse
 import numpy as np
 from django.contrib import messages
 from .models import Match, League, Strategy
-from .forms import MatchesForm, StrategyForm
+from .forms import MatchesForm, StrategyForm, AplicarStrategyForm
 
 
 # ----------- funciones para calcular los diferentes mercados -----------------
@@ -398,10 +398,17 @@ def MatchesbyleaguesDate(request):
                 date__range=(start_date, end_date),
                 league__id__in=leagues_select,
                 gol_home_ht=None)
+            # asignamos a la propiedad choices las estrategias del usuario logueado
+            user = request.user
+            strategies = Strategy.objects.filter(user=user).values_list('id', 'name')
+            form_strategy = AplicarStrategyForm()
+            form_strategy.fields['strategies'].choices = strategies  # Asigna los choices al campo strategies
+
             return render(request, 'forecasts/matches_leagues_date_list.html', {
                 'title': title,
                 'form': form,
-                'matches': matches})
+                'matches': matches,
+                'form_strategy': form_strategy})
     else:
         form = MatchesForm()
     return render(request, 'forecasts/matches_leagues_date_list.html', {
@@ -468,3 +475,5 @@ class StrategyDeleteView(DeleteView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Eliminar estrategia'
         return context
+
+

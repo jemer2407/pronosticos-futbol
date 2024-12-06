@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView
 from django.urls import reverse
 from .forms import ContactForm
 from django.core.mail import EmailMessage
-from forecasts.models import Match, Contry, League
+from forecasts.models import Match, Contry, League, Strategy
 from forecasts.views import get_next_matches_league
 
 class HomeView(TemplateView):
@@ -24,6 +24,10 @@ class HomeView(TemplateView):
             next_unplayed_matches.append(matches)
         
         context['next_matches_leagues_list'] = next_unplayed_matches
+        # obtener las estrategias del usuario logueado y pasarlas en el contexto
+        #strategies_obj = Strategy.objects.all()
+        #context['strategies_obj'] = strategies_obj
+
         
         return context
 
