@@ -4,19 +4,24 @@ from django.contrib.auth.models import User
 from forecasts.models import League, Strategy
 
 
-
 class MatchesForm(forms.Form):
+    def __init__(self, user=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['strategies'].choices = get_user_strategy_choices(user)
+
     leagues = forms.MultipleChoiceField(choices=League.objects.all().values_list('id','name'),
                             widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'leagues'}))
     start_date = forms.DateField(required=True,
                             widget=DatePickerInput(attrs={'class': 'form-control', 'type': 'date', 'id': 'start_date'}))
-    
     end_date = forms.DateField(required=True,
                                widget=DatePickerInput(attrs={'class': 'form-control', 'type': 'date', 'id': 'end_date'}))
-
-class AplicarStrategyForm(forms.Form):
     strategies = forms.ChoiceField(choices=[],
-                                   widget=forms.Select(attrs={'class': 'form-control', 'id': 'strategy'}))
+                                widget=forms.Select(attrs={'class': 'form-control', 'id': 'strategy'}))
+    
+def get_user_strategy_choices(user):
+    strategies = Strategy.objects.filter(user=user).values_list('id', 'name')
+    return strategies
+
     
 
 class StrategyForm(forms.ModelForm):
