@@ -1,13 +1,12 @@
 from django import forms
 from django_flatpickr.widgets import DatePickerInput, TimePickerInput, DateTimePickerInput
-from django.contrib.auth.models import User
 from forecasts.models import League, Strategy
 
 
 class MatchesForm(forms.Form):
     def __init__(self, user=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['strategies'].choices = get_user_strategy_choices(user)
+        self.fields['strategies'].choices = Strategy.objects.filter(user=user).values_list('id', 'name')
 
     leagues = forms.MultipleChoiceField(choices=League.objects.all().values_list('id','name'),
                             widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'leagues'}))
@@ -17,11 +16,6 @@ class MatchesForm(forms.Form):
                                widget=DatePickerInput(attrs={'class': 'form-control', 'type': 'date', 'id': 'end_date'}))
     strategies = forms.ChoiceField(choices=[],
                                 widget=forms.Select(attrs={'class': 'form-control', 'id': 'strategy'}))
-    
-def get_user_strategy_choices(user):
-    strategies = Strategy.objects.filter(user=user).values_list('id', 'name')
-    return strategies
-
     
 
 class StrategyForm(forms.ModelForm):
