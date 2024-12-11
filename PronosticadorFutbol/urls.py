@@ -20,6 +20,7 @@ from django.conf import settings
 
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
@@ -27,9 +28,10 @@ urlpatterns = [
     path('pages/', include('pages.urls')),
     path('feeder/', include('feeder.urls')),
     path('forecasts/', include('forecasts.urls')),
+    path('payment/', include('payment.urls')),
     # paths de Auth. con este path django nos provee de varias urls para manejar autenticacion
     path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/', include('registration.urls')),    
+    path('accounts/', include('registration.urls')),
     path('summernote/', include('django_summernote.urls')),
     
 ]

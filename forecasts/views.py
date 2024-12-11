@@ -737,61 +737,130 @@ class MatchDetailView(DetailView):
             
             
         context['prob_win_home'] = round(prob_win_home,2)
-        context['cuota_win_home'] = np.round((1/prob_win_home)*100,2)
+        if prob_win_home != 0:
+            context['cuota_win_home'] = np.round((1/prob_win_home)*100,2)
+        else:
+            context['cuota_win_home'] = 0
         context['prob_win_visit'] = round(prob_win_visit,2)
-        context['cuota_win_visit'] = np.round((1/prob_win_visit)*100,2)
+        if prob_win_visit != 0:
+            context['cuota_win_visit'] = np.round((1/prob_win_visit)*100,2)
+        else:
+            context['cuota_win_visit'] = 0
         context['prob_empate'] = round(prob_empate,2)
-        context['cuota_empate'] = np.round((1/prob_empate)*100,2)
+        if prob_empate != 0:
+            context['cuota_empate'] = np.round((1/prob_empate)*100,2)
+        else:
+            context['cuota_empate'] = 0        
 
         context['prob_over_05_ht'] = round(prob_over_05_ht,2)
-        context['cuota_over_05_ht'] = np.round((1/prob_over_05_ht)*100,2)
+        if prob_over_05_ht != 0:
+            context['cuota_over_05_ht'] = np.round((1/prob_over_05_ht)*100,2)
+        else:
+            context['cuota_over_05_ht'] = 0
         context['prob_under_05_ht'] = round(100-prob_over_05_ht,2)
-        context['cuota_under_05_ht'] = np.round((1/(100 - prob_over_05_ht))*100,2)
+        if prob_over_05_ht != 100:
+            context['cuota_under_05_ht'] = np.round((1/(100 - prob_over_05_ht))*100,2)
+        else:
+            context['cuota_under_05_ht'] = 0
 
         context['prob_over_15_ht'] = round(prob_over_15_ht,2)
-        context['cuota_over_15_ht'] = np.round((1/prob_over_15_ht)*100,2)
+        if prob_over_15_ht != 0:
+            context['cuota_over_15_ht'] = np.round((1/prob_over_15_ht)*100,2)
+        else:
+            context['cuota_over_15_ht'] = 0
         context['prob_under_15_ht'] = round(100 - prob_over_15_ht,2)
-        context['cuota_under_15_ht'] = np.round((1/(100 - prob_over_15_ht))*100,2)
+        if prob_over_15_ht != 100:
+            context['cuota_under_15_ht'] = np.round((1/(100 - prob_over_15_ht))*100,2)
+        else:
+            context['cuota_under_15_ht'] = 0
 
         context['prob_over_05_ft'] = round(prob_over_05_ft,2)
-        context['cuota_over_05_ft'] = np.round((1/prob_over_05_ft)*100,2)
+        if prob_over_05_ft != 0:
+            context['cuota_over_05_ft'] = np.round((1/prob_over_05_ft)*100,2)
+        else:
+            context['cuota_over_05_ft'] = 0
         context['prob_under_05_ft'] = round(100-prob_over_05_ft,2)
-        context['cuota_under_05_ft'] = np.round((1/(100 - prob_over_05_ft))*100,2)
+        if prob_over_05_ft != 100:
+            context['cuota_under_05_ft'] = np.round((1/(100 - prob_over_05_ft))*100,2)
+        else:
+            context['cuota_under_05_ft'] = 0
 
         context['prob_over_15_ft'] = round(prob_over_15_ft,2)
-        context['cuota_over_15_ft'] = np.round((1/prob_over_15_ft)*100,2)
+        if prob_over_15_ft != 0:
+            context['cuota_over_15_ft'] = np.round((1/prob_over_15_ft)*100,2)
+        else:
+            context['cuota_over_15_ft'] = 0
         context['prob_under_15_ft'] = round(100 - prob_over_15_ft,2)
-        context['cuota_under_15_ft'] = np.round((1/(100 - prob_over_15_ft))*100,2)
+        if prob_over_15_ft != 100:
+            context['cuota_under_15_ft'] = np.round((1/(100 - prob_over_15_ft))*100,2)
+        else:
+            context['cuota_under_15_ft'] = 0
 
         context['prob_over_25_ft'] = round(prob_over_25_ft,2)
-        context['cuota_over_25_ft'] = np.round((1/prob_over_25_ft)*100,2)
+        if prob_over_25_ft != 0:
+            context['cuota_over_25_ft'] = np.round((1/prob_over_25_ft)*100,2)
+        else:
+            context['cuota_over_25_ft'] = 0
         context['prob_under_25_ft'] = round(100 - prob_over_25_ft,2)
-        context['cuota_under_25_ft'] = np.round((1/(100 - prob_over_25_ft))*100,2)
+        if prob_over_25_ft != 100:
+            context['cuota_under_25_ft'] = np.round((1/(100 - prob_over_25_ft))*100,2)
+        else:
+            context['cuota_under_25_ft'] = 0
 
         context['prob_over_35_ft'] = round(prob_over_35_ft,2)
-        context['cuota_over_35_ft'] = np.round((1/prob_over_35_ft)*100,2)
+        if prob_over_35_ft != 0:
+            context['cuota_over_35_ft'] = np.round((1/prob_over_35_ft)*100,2)
+        else:
+            context['cuota_over_35_ft'] = 0
         context['prob_under_35_ft'] = round(100 - prob_over_35_ft,2)
-        context['cuota_under_35_ft'] = np.round((1/(100 - prob_over_35_ft))*100,2)
+        if prob_over_35_ft != 100:
+            context['cuota_under_35_ft'] = np.round((1/(100 - prob_over_35_ft))*100,2)
+        else:
+            context['cuota_under_35_ft'] = 0
 
         context['prob_over_05_mitad2'] = round(prob_over_05_mitad2,2)
-        context['cuota_over_05_mitad2'] = np.round((1/prob_over_05_mitad2)*100,2)
+        if prob_over_05_mitad2 != 0:
+            context['cuota_over_05_mitad2'] = np.round((1/prob_over_05_mitad2)*100,2)
+        else:
+            context['cuota_over_05_mitad2'] = 0
         context['prob_under_05_mitad2'] = round(100 - prob_over_05_mitad2,2)
-        context['cuota_under_05_mitad2'] = np.round((1/(100 - prob_over_05_mitad2))*100,2)
+        if prob_over_05_mitad2 != 100:
+            context['cuota_under_05_mitad2'] = np.round((1/(100 - prob_over_05_mitad2))*100,2)
+        else:
+            context['cuota_under_05_mitad2'] = 0
 
         context['prob_aem_ft'] = round(prob_aem_ft,2)
-        context['cuota_aem_ft'] = np.round((1/prob_aem_ft)*100,2)
+        if prob_aem_ft != 0:
+            context['cuota_aem_ft'] = np.round((1/prob_aem_ft)*100,2)
+        else:
+            context['cuota_aem_ft'] = 0
         context['prob_aem_ft_no'] = round(100 - prob_aem_ft,2)
-        context['cuota_aem_ft_no'] = np.round((1/(100 - prob_aem_ft))*100,2)
+        if prob_aem_ft != 100:
+            context['cuota_aem_ft_no'] = np.round((1/(100 - prob_aem_ft))*100,2)
+        else:
+            context['cuota_aem_ft_no'] = 0
 
         context['prob_aem_ht'] = round(prob_aem_ht,2)
-        context['cuota_aem_ht'] = np.round((1/prob_aem_ht)*100,2)
+        if prob_aem_ht != 0:
+            context['cuota_aem_ht'] = np.round((1/prob_aem_ht)*100,2)
+        else:
+            context['cuota_aem_ht'] = 0
         context['prob_aem_ht_no'] = round(100 - prob_aem_ht,2)
-        context['cuota_aem_ht_no'] = np.round((1/(100 - prob_aem_ht))*100,2)
+        if prob_aem_ht != 100:
+            context['cuota_aem_ht_no'] = np.round((1/(100 - prob_aem_ht))*100,2)
+        else:
+            context['cuota_aem_ht_no'] = 0
 
         context['prob_aem_ht2'] = round(prob_aem_ht2,2)
-        context['cuota_aem_ht2'] = np.round((1/prob_aem_ht2)*100,2)
+        if prob_aem_ht2 != 0:
+            context['cuota_aem_ht2'] = np.round((1/prob_aem_ht2)*100,2)
+        else:
+            context['cuota_aem_ht2'] = 0
         context['prob_aem_h2t_no'] = round(100 - prob_aem_ht2,2)
-        context['cuota_aem_ht2_no'] = np.round((1/(100 - prob_aem_ht2))*100,2)
+        if prob_aem_ht2 != 100:
+            context['cuota_aem_ht2_no'] = np.round((1/(100 - prob_aem_ht2))*100,2)
+        else:
+            context['cuota_aem_ht2_no'] = 0
 
         return context
 
@@ -851,7 +920,6 @@ def MatchesbyleaguesDate(request):
             
             matches_strategy = get_matches_strategy(matches,strategy)
             
-
             return render(request, 'forecasts/matches_leagues_date_list.html', {
                 'title': title,
                 'form': form,

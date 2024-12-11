@@ -36,22 +36,19 @@
           </div>
         </div>
       </form>
-      
-      
-        
-      
-      <table class="table mt-3">
-        <thead>
-          <tr>
-            <th scope="col">Pais</th>
-            <th scope="col">Liga</th>
-            <th scope="col">Jornada</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Local</th>
-            <th scope="col">Visitante</th>
-          </tr>
-        </thead> 
-        <tbody>
+      {% if matches %}
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Pais</th>
+              <th scope="col">Liga</th>
+              <th scope="col">Jornada</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Local</th>
+              <th scope="col">Visitante</th>
+            </tr>
+          </thead> 
+          <tbody>
           {% for match in matches %}
             <tr>
               <td><img src="{{match.league.contry.image.url}}" class="img-fluid" width=25px height=20px alt=""> </td>
@@ -75,6 +72,9 @@
           {% endfor %}
         </tbody>
       </table>
+    {% else %}
+      <p style="color:red">No se encuentran partidos para las opciones seleccionadas. Prueba de nuevo.</p>
+    {% endif %}
     
     </div>
   </div>

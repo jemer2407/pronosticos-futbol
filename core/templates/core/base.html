@@ -66,6 +66,7 @@
                     <div id="collapseMiEspacio" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <h6 class="collapse-header">Estrategias</h6>
+                            <a class="collapse-item" href="{% url 'profile' %}">Perfil</a>
                             <a class="collapse-item" href="{% url 'strategies-list' %}">Mis Estrategias</a>
                         </div>
                     </div>
@@ -250,6 +251,7 @@
                             <div class="container">
                                 <div class="row justify-content-center align-items-center">
                                     <div class="col">
+                                        <img src="{{request.user.profile.avatar.url}}" class="img-fluid">
                                         <span class="mr-2 d-none d-lg-inline text-gray-600 small"><b>{{user|title}}</b></span>
                                     </div>
                                 </div>

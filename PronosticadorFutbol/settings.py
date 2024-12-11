@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'feeder',
     'forecasts',
     'pages',
+    'payment',
+    'Profiles',
 ]
 
 MIDDLEWARE = [
@@ -144,3 +146,8 @@ if DEBUG:
 else:
     # Aquí hay que configurar un email real para producción
     pass
+
+# para produccion estas variable tienen que ir en variables de entorno para que no se muestren en github
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51QUm1zFW2p0pN1BYbOIqmPrpklkAp0enVg2DMxMoZSpKHMfZsZjWS6jdzt7RBdxiMPFN2vBeAmClMyJlKfHxOKqb00Es6Okc5b'
+STRIPE_SECRET_KEY = 'sk_test_51QUm1zFW2p0pN1BYxaJqZuCOJ9HW71IX94EZd4wDSHinTca1nNyJnWE80nCYpkx0hr8hlqhldST3DlgJ7y63UYkl00eh8qzO3B'
+STRIPE_API_VERSION = '2024-11-20.acacia'

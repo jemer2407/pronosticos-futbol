@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Perfil de usuario{% endblock %}
+{% block content %}
+<main role="main">
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-md-9 mx-auto mb-5">        
+                <div class="row">
+                    <!-- Previa del avatar -->
+                    <div class="col-md-2">
+                        {% if object.avatar %}
+                            <img src="{{object.avatar.url}}" alt="" class="img-fluid">
+                        {% else %}
+                            <img src="{% static 'registration/image/no-avatar.jpg' %}" alt="" class="img-fluid">
+                        {% endif %}
+                        {% if request.user != profile.user %}
+                            <a href="{% url 'messenger:start' profile.user.username %}" class="btn btn-primary btn-sm mb-3 mt-3">
+                                Enviar mensaje
+                            </a>
+                        {% endif %}
+                    </div>
+            
+                    <div class="col-md-10">
+                        <h3>Perfil de {{object.user}}</h3>
+                        <h4>Biografía</h4>
+                        {% if object.bio %}
+                            <p>{{object.bio}}</p>
+                        {% else %}
+                            <p>Sin información de Biografia</p>
+                        {% endif %}
+                        <h4>Link</h4>
+                        {% if object.link %}
+                            <a href={{object.link}}>{{object.link}}</a>                            
+                        {% else %}
+                            <p>Sin información de link</p>
+                        {% endif %}
+                        <p><a href="{% url 'profiles:profile-list' %}">Listado de perfiles</a></p>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
