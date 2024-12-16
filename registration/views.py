@@ -2,10 +2,7 @@
 from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect
-
-from registration.models import Profile
-from .forms import EmailForm, ProfileForm, UserCreationFormWithEmail
-
+from django.utils import timezone
 from django.views.generic import CreateView # Clase de la que vamos a heredar para crear una vista de Creación de un registro
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -14,6 +11,8 @@ from django.contrib.auth import logout
 from django.views.generic.edit import UpdateView
 import stripe
 from django import forms
+from registration.models import Profile
+from .forms import EmailForm, ProfileForm, UserCreationFormWithEmail
 
 
 
@@ -63,7 +62,23 @@ class ProfileUpdate(UpdateView):
         # recuperar el objeto que se va a editar
         profile, created = Profile.objects.get_or_create(user=self.request.user)
         return profile
-
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['user'] = self.request.user
+            profile = Profile.objects.get(user=self.request.user)
+            if not profile.is_trial:
+                context['trial_month'] = 'Tu periodo de prueba ha finalizado'
+            else:
+                context['trial_month'] = profile.trial_month
+                
+            if profile.is_subscribed:
+                context['date_subscription'] = profile.date_subscription
+                context['subscription_month'] = profile.subscription_month
+            else:
+                context['date_subscription'] = 'No tienes una subscripción activa'
+                context['subscription_month'] = 'No tienes una subscripción activa'
+        return context
 
 @method_decorator(login_required, name='dispatch')
 class EmailUpdate(UpdateView):

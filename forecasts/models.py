@@ -66,6 +66,17 @@ class Match(models.Model):
     gol_visit_ht = models.IntegerField(verbose_name='Goles Equipo Visitante HT', blank=True, null=True)
     gol_home_ft = models.IntegerField(verbose_name='Goles Equipo Local FT', blank=True, null=True)
     gol_visit_ft = models.IntegerField(verbose_name='Goles Equipo Visitante FT', blank=True, null=True)
+    goles_tramo_1_10 = models.IntegerField(verbose_name='Goles del 1 al 10', blank=True, null=True)
+    goles_tramo_11_20 = models.IntegerField(verbose_name='Goles del 11 al 20', blank=True, null=True)
+    goles_tramo_21_30 = models.IntegerField(verbose_name='Goles del 21 al 30', blank=True, null=True)
+    goles_tramo_31_40 = models.IntegerField(verbose_name='Goles del 31 al 40', blank=True, null=True)
+    goles_tramo_41_50 = models.IntegerField(verbose_name='Goles del 41 al 50', blank=True, null=True)
+    goles_tramo_51_60 = models.IntegerField(verbose_name='Goles del 51 al 60', blank=True, null=True)
+    goles_tramo_61_70 = models.IntegerField(verbose_name='Goles del 61 al 70', blank=True, null=True)
+    goles_tramo_71_80 = models.IntegerField(verbose_name='Goles del 71 al 80', blank=True, null=True)
+    goles_tramo_81_90 = models.IntegerField(verbose_name='Goles del 81 al 90', blank=True, null=True)
+    goles_tramo_91_final = models.IntegerField(verbose_name='Goles del 91 al final', blank=True, null=True)
+    
 
     class Meta:
         verbose_name = 'Partido'

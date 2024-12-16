@@ -9,6 +9,7 @@
       <div class="col-md-9 mx-auto mb-5">
         <form action="" method="post">{% csrf_token %}
           <h3 class="mb-4">Registro</h3>
+          <p>Si ya tienes una cuenta, <a href="{% url 'login' %}">Accede</a> a ella. Y sino, regístrate gratis y disfrutarás de 14 días de prueba</p>
           {{form.as_p}}
           <p><input type="submit" class="btn btn-primary btn-block" value="Confirmar"></p>
         </form>

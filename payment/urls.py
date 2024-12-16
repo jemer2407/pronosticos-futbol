@@ -3,8 +3,9 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.process_subscription, name="payment-subscription"),
-    path('success/', views.success_payment, name="success-payment"),
-    path('cancel/', views.cancel_payment, name="cancel-payment"),
-    path('error/', views.error_payment, name="error-payment"),
+    path('', views.checkout_session, name="checkout-session"),
+    path('success/', views.success_payment, name="success"),
+    path('subscriptions/', views.suscriptions, name="subscriptions"),
+    path('cancel/', views.cancel_payment, name="cancel"),
+    path('error/', views.error_payment, name="error"),
 ]

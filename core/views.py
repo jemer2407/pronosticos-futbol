@@ -2,8 +2,11 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.urls import reverse
+
+from registration.models import Profile
 from .forms import ContactForm
 from django.core.mail import EmailMessage
+from django.utils import timezone
 from forecasts.models import Match, Contry, League, Strategy
 from forecasts.views import get_next_matches_league
 
@@ -24,10 +27,10 @@ class HomeView(TemplateView):
             next_unplayed_matches.append(matches)
         
         context['next_matches_leagues_list'] = next_unplayed_matches
-        # obtener las estrategias del usuario logueado y pasarlas en el contexto
-        #strategies_obj = Strategy.objects.all()
-        #context['strategies_obj'] = strategies_obj
-
+        if self.request.user.is_authenticated:
+            context['user'] = self.request.user
+            profile = Profile.objects.get(user=self.request.user)
+            context['profile'] = profile
         
         return context
 

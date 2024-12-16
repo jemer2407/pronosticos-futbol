@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('', include('emailmarketing.urls')),
+    path('administrator/', include('administrator.urls')),
     path('pages/', include('pages.urls')),
     path('feeder/', include('feeder.urls')),
     path('forecasts/', include('forecasts.urls')),

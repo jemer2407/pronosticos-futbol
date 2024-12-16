@@ -7,6 +7,9 @@ from django.urls import reverse_lazy
 from django.http import Http404, JsonResponse
 import numpy as np
 from django.contrib import messages
+from django import forms
+
+from registration.models import Profile
 from .models import Match, League, Strategy
 from .forms import MatchesForm, StrategyForm
 
@@ -64,47 +67,244 @@ def calcular_prob(total_matches,
 
 
 
-def calcular_prob_anota_concede_gol(num_total_match,matches_anota_ft,matches_anota_ht,matches_anota_2ht,matches_concede_ft,matches_concede_ht,matches_concede_2ht):
+def calcular_prob_anota_concede_gol(num_total_match,
+                                    num_total_match_home,
+                                    num_total_match_visit,
+                                    matches_anota_ft_home,
+                                    matches_anota_ft_visit,
+                                    matches_anota_ft,
+                                    matches_anota_ht_home,
+                                    matches_anota_ht_visit,
+                                    matches_anota_ht,
+                                    matches_anota_2ht_home,
+                                    matches_anota_2ht_visit,
+                                    matches_anota_2ht,
+                                    matches_concede_ft_home,
+                                    matches_concede_ft_visit,
+                                    matches_concede_ft,
+                                    matches_concede_ht_home,
+                                    matches_concede_ht_visit,
+                                    matches_concede_ht,
+                                    matches_concede_2ht_home,
+                                    matches_concede_2ht_visit,
+                                    matches_concede_2ht,
+                                    matches_aem_home,
+                                    matches_aem_visit,
+                                    matches_aem,
+                                    matches_anota_15_ft_home,
+                                    matches_anota_15_ft_visit,
+                                    matches_anota_15_ft,
+                                    matches_concede_15_ft_home,
+                                    matches_concede_15_ft_visit,
+                                    matches_concede_15_ft,
+                                    matches_over_25_ft_home,
+                                    matches_over_25_ft_visit,
+                                    matches_over_25_ft):
+    
+    prob_anota_ft_home = np.round(100 * matches_anota_ft_home / num_total_match_home,2)
+    prob_anota_ft_visit = np.round(100 * matches_anota_ft_visit / num_total_match_visit,2)
+    prob_anota_ft = np.round(100 * matches_anota_ft / num_total_match,2)
 
-    prob_local_anota_ft = np.round(100 * matches_anota_ft / num_total_match,2)
-    prob_local_anota_ht = np.round(100 * matches_anota_ht / num_total_match,2)
-    prob_local_anota_2ht = np.round(100 * matches_anota_2ht / num_total_match,2)
-    prob_local_concede_ft = np.round(100 * matches_concede_ft / num_total_match,2)
-    prob_local_concede_ht = np.round(100 * matches_concede_ht / num_total_match,2)
-    prob_local_concede_2ht = np.round(100 * matches_concede_2ht / num_total_match,2)
+    prob_anota_ht_home = np.round(100 * matches_anota_ht_home / num_total_match_home,2)
+    prob_anota_ht_visit = np.round(100 * matches_anota_ht_visit / num_total_match_visit,2)
+    prob_anota_ht = np.round(100 * matches_anota_ht / num_total_match,2)
 
-    return (prob_local_anota_ft,
-            prob_local_anota_ht,
-            prob_local_anota_2ht,
-            prob_local_concede_ft,
-            prob_local_concede_ht,
-            prob_local_concede_2ht)
+    prob_anota_2ht_home = np.round(100 * matches_anota_2ht_home / num_total_match_home,2)
+    prob_anota_2ht_visit = np.round(100 * matches_anota_2ht_visit / num_total_match_visit,2)
+    prob_anota_2ht = np.round(100 * matches_anota_2ht / num_total_match,2)
+
+    prob_concede_ft_home = np.round(100 * matches_concede_ft_home / num_total_match_home,2)
+    prob_concede_ft_visit = np.round(100 * matches_concede_ft_visit / num_total_match_visit,2)
+    prob_concede_ft = np.round(100 * matches_concede_ft / num_total_match,2)
+
+    prob_concede_ht_home = np.round(100 * matches_concede_ht_home / num_total_match_home,2)
+    prob_concede_ht_visit = np.round(100 * matches_concede_ht_visit / num_total_match_visit,2)
+    prob_concede_ht = np.round(100 * matches_concede_ht / num_total_match,2)
+
+    prob_concede_2ht_home = np.round(100 * matches_concede_2ht_home / num_total_match_home,2)
+    prob_concede_2ht_visit = np.round(100 * matches_concede_2ht_visit / num_total_match_visit,2)
+    prob_concede_2ht = np.round(100 * matches_concede_2ht / num_total_match,2)
+
+    prob_aem_home = np.round(100 * matches_aem_home / num_total_match_home,2)
+    prob_aem_visit = np.round(100 * matches_aem_visit / num_total_match_visit,2)
+    prob_aem = np.round(100 * matches_aem / num_total_match,2)
+
+    prob_anota_15_ft_home = np.round(100 * matches_anota_15_ft_home / num_total_match_home,2)
+    prob_anota_15_ft_visit = np.round(100 * matches_anota_15_ft_visit / num_total_match_visit,2)
+    prob_anota_15_ft = np.round(100 * matches_anota_15_ft / num_total_match,2)
+
+    prob_concede_15_ft_home = np.round(100 * matches_concede_15_ft_home / num_total_match_home,2)
+    prob_concede_15_ft_visit = np.round(100 * matches_concede_15_ft_visit / num_total_match_visit,2)
+    prob_concede_15_ft = np.round(100 * matches_concede_15_ft / num_total_match,2)
+
+    prob_over_25_ft_home = np.round(100 * matches_over_25_ft_home / num_total_match_home,2)
+    prob_over_25_ft_visit = np.round(100 * matches_over_25_ft_visit / num_total_match_visit,2)
+    prob_over_25_ft = np.round(100 * matches_over_25_ft / num_total_match,2)
+
+
+    return (prob_anota_ft_home,
+            prob_anota_ft_visit,
+            prob_anota_ft,
+            prob_anota_ht_home,
+            prob_anota_ht_visit,
+            prob_anota_ht,
+            prob_anota_2ht_home,
+            prob_anota_2ht_visit,
+            prob_anota_2ht,
+            prob_concede_ft_home,
+            prob_concede_ft_visit,
+            prob_concede_ft,
+            prob_concede_ht_home,
+            prob_concede_ht_visit,
+            prob_concede_ht,
+            prob_concede_2ht_home,
+            prob_concede_2ht_visit,
+            prob_concede_2ht,
+            prob_aem_home,
+            prob_aem_visit,
+            prob_aem,
+            prob_anota_15_ft_home,
+            prob_anota_15_ft_visit,
+            prob_anota_15_ft,
+            prob_concede_15_ft_home,
+            prob_concede_15_ft_visit,
+            prob_concede_15_ft,
+            prob_over_25_ft_home,
+            prob_over_25_ft_visit,
+            prob_over_25_ft)
 
 # funcion que obtiene el numero de partidos que anota y concede un equipo tanto en ft, ht como 2ht
-def get_matches_home_anota_concede_gol(home_home,home_visit):
+def get_matches_anota_concede_gol(home,visit):
 
-    matches_anota_ft = 0
-    matches_anota_ht = 0
-    matches_anota_2ht = 0
-    matches_concede_ft = 0
-    matches_concede_ht = 0
-    matches_concede_2ht = 0
+    
+    matches_anota_ft_home = 0   # numero de partidos en los que anota gol como local
+    matches_anota_ft_visit = 0  # numero de partidos en los que anota gol como visitante
+    matches_anota_ft = 0    # numero de partidos en los que anota gol ft
 
-    for match in home_home:
+    matches_anota_ht_home = 0   # numero de partidos en los que anota gol en 1ª mitad como local
+    matches_anota_ht_visit = 0  # numero de partidos en los que anota gol en 1º mitad como visitante
+    matches_anota_ht = 0    # numero de partidos en los que anota gol en 1ª mitad
+
+    matches_anota_2ht_home = 0  # numero de partidos en los que anota gol en 2ª mitad como local
+    matches_anota_2ht_visit = 0 # numero de partidos en los que anota gol en 2ª mitad como visitante
+    matches_anota_2ht = 0   # numero de partidos en los que anota gol en 2ª mitad
+
+    matches_concede_ft_home = 0  # numero de partidos en los que concede gol ft como local
+    matches_concede_ft_visit = 0  # numero de partidos en los que concede gol ft como visitante
+    matches_concede_ft = 0  # numero de partidos en los que concede gol ft
+
+    matches_concede_ht_home = 0  # numero de partidos en los que concede gol en 1ª mitad como local
+    matches_concede_ht_visit = 0  # numero de partidos en los que concede gol en 1ª mitad como visitante
+    matches_concede_ht = 0  # numero de partidos en los que concede gol en 1ª mitad
+
+    matches_concede_2ht_home = 0 # numero de partidos en los que concede gol en 2ª mitad como local
+    matches_concede_2ht_visit = 0 # numero de partidos en los que concede gol en 2ª mitad como visitante
+    matches_concede_2ht = 0 # numero de partidos en los que concede gol en 2ª mitad
+
+    matches_aem_home = 0 # numero de partidos en los que hay aem como local
+    matches_aem_visit = 0 # numero de partidos en los que hay aem como visitante
+    matches_aem = 0 # numero de partidos en los que hay aem
+
+    matches_anota_15_ft_home = 0   # numero de partidos en los que anota más de 1.5 goles como local
+    matches_anota_15_ft_visit = 0  # numero de partidos en los que anota más de 1.5 goles como visitante
+    matches_anota_15_ft = 0  # numero de partidos en los que anota más de 1.5 goles
+
+    matches_concede_15_ft_home = 0  # numero de partidos en los que concede más de 1.5 goles como local
+    matches_concede_15_ft_visit = 0  # numero de partidos en los que concede más de 1.5 goles como visitante
+    matches_concede_15_ft = 0  # numero de partidos en los que concede más de 1.5 goles
+
+    matches_over_25_ft_home = 0     # numero de partidos en los que hay más de 2.5 goles cuando juega de local
+    matches_over_25_ft_visit = 0    # numero de partidos en los que hay más de 2.5 goles cuando juega de visitante
+    matches_over_25_ft = 0          # numero de partidos en los que hay más de 2.5 goles
+
+    for match in home:
         if match.gol_home_ft > 0:
-            matches_anota_ft += 1
+            matches_anota_ft_home += 1
         if match.gol_home_ht > 0:
-            matches_anota_ht += 1
+            matches_anota_ht_home += 1
         if match.gol_home_ft - match.gol_home_ht > 0:
-            matches_anota_2ht += 1
+            matches_anota_2ht_home += 1
         if match.gol_visit_ft > 0:
-            matches_concede_ft += 1
+            matches_concede_ft_home += 1
         if match.gol_visit_ht > 0:
-            matches_concede_ht += 1
+            matches_concede_ht_home += 1
         if match.gol_visit_ft - match.gol_visit_ht > 0:
-            matches_concede_2ht += 1
+            matches_concede_2ht_home += 1
+        if match.gol_home_ft > 0 and match.gol_visit_ft > 0:
+            matches_aem_home += 1
 
-    return matches_anota_ft,matches_anota_ht,matches_anota_2ht,matches_concede_ft,matches_concede_ht,matches_concede_2ht
+        if match.gol_home_ft > 1:
+            matches_anota_15_ft_home += 1
+        if match.gol_visit_ft > 1:
+            matches_concede_15_ft_home += 1
+        if match.gol_home_ft + match.gol_visit_ft > 2:
+            matches_over_25_ft_home += 1
+    
+    for match in visit:
+        if match.gol_visit_ft > 0:
+            matches_anota_ft_visit += 1
+        if match.gol_visit_ht > 0:
+            matches_anota_ht_visit += 1
+        if match.gol_visit_ft - match.gol_home_ht > 0:
+            matches_anota_2ht_visit += 1
+        if match.gol_home_ft > 0:
+            matches_concede_ft_visit += 1
+        if match.gol_home_ht > 0:
+            matches_concede_ht_visit += 1
+        if match.gol_home_ft - match.gol_home_ht > 0:
+            matches_concede_2ht_visit += 1
+        if match.gol_home_ft > 0 and match.gol_visit_ft > 0:
+            matches_aem_visit += 1
+        
+        if match.gol_visit_ft > 1:
+            matches_anota_15_ft_visit += 1
+        if match.gol_home_ft > 1:
+            matches_concede_15_ft_visit += 1
+        if match.gol_home_ft + match.gol_visit_ft > 2:
+            matches_over_25_ft_visit += 1
+    
+    matches_anota_ft = matches_anota_ft_home + matches_anota_ft_visit
+    matches_anota_ht = matches_anota_ht_home + matches_anota_ht_visit
+    matches_anota_2ht = matches_anota_2ht_home + matches_anota_2ht_visit
+    matches_concede_ft = matches_concede_ft_home + matches_concede_ft_visit
+    matches_concede_ht = matches_concede_ht_home + matches_concede_ht_visit
+    matches_concede_2ht = matches_concede_2ht_home + matches_concede_2ht_visit
+    matches_aem = matches_aem_home + matches_aem_visit
+    matches_anota_15_ft = matches_anota_15_ft_home + matches_anota_15_ft_visit
+    matches_concede_15_ft = matches_concede_15_ft_home + matches_concede_15_ft_visit
+    matches_over_25_ft = matches_over_25_ft_home + matches_over_25_ft_visit
+    
+
+    return (matches_anota_ft_home,
+            matches_anota_ft_visit,
+            matches_anota_ft,
+            matches_anota_ht_home,
+            matches_anota_ht_visit,
+            matches_anota_ht,
+            matches_anota_2ht_home,
+            matches_anota_2ht_visit,
+            matches_anota_2ht,
+            matches_concede_ft_home,
+            matches_concede_ft_visit,
+            matches_concede_ft,
+            matches_concede_ht_home,
+            matches_concede_ht_visit,
+            matches_concede_ht,
+            matches_concede_2ht_home,
+            matches_concede_2ht_visit,
+            matches_concede_2ht,
+            matches_aem_home,
+            matches_aem_visit,
+            matches_aem,
+            matches_anota_15_ft_home,
+            matches_anota_15_ft_visit,
+            matches_anota_15_ft,
+            matches_concede_15_ft_home,
+            matches_concede_15_ft_visit,
+            matches_concede_15_ft,
+            matches_over_25_ft_home,
+            matches_over_25_ft_visit,
+            matches_over_25_ft)
 
 
 
@@ -175,45 +375,195 @@ def get_matches_both_team(obj):
     num_total_match_visit = num_total_match_visit_home + num_total_match_visit_visit# numero total de partidos que ha jugado el visitante
     # -------------------------------------------------------------------------------------
     # numero de partidos que anotan y conceden tanto en ft, ht como 2ht
-    (matches_anota_ft,
-     matches_anota_ht,
-     matches_anota_2ht,
-     matches_concede_ft,
-     matches_concede_ht,
-     matches_concede_2ht) = get_matches_home_anota_concede_gol(home_home,home_visit)
+    (matches_anota_ft_home,
+    matches_anota_ft_visit,
+    matches_anota_ft,
+    matches_anota_ht_home,
+    matches_anota_ht_visit,
+    matches_anota_ht,
+    matches_anota_2ht_home,
+    matches_anota_2ht_visit,
+    matches_anota_2ht,
+    matches_concede_ft_home,
+    matches_concede_ft_visit,
+    matches_concede_ft,
+    matches_concede_ht_home,
+    matches_concede_ht_visit,
+    matches_concede_ht,
+    matches_concede_2ht_home,
+    matches_concede_2ht_visit,
+    matches_concede_2ht,
+    matches_aem_home,
+    matches_aem_visit,
+    matches_aem,
+    matches_anota_15_ft_home,
+    matches_anota_15_ft_visit,
+    matches_anota_15_ft,
+    matches_concede_15_ft_home,
+    matches_concede_15_ft_visit,
+    matches_concede_15_ft,
+    matches_over_25_ft_home,
+    matches_over_25_ft_visit,
+    matches_over_25_ft) = get_matches_anota_concede_gol(home_home,home_visit)
     
-    (prob_local_anota_ft,
-     prob_local_anota_ht,
-     prob_local_anota_2ht,
-     prob_local_concede_ft,
-     prob_local_concede_ht,
-     prob_local_concede_2ht) = calcular_prob_anota_concede_gol(num_total_match_home,
-                                                               matches_anota_ft,
-                                                               matches_anota_ht,
-                                                               matches_anota_2ht,
-                                                               matches_concede_ft,
-                                                               matches_concede_ht,
-                                                               matches_concede_2ht)
+    (prob_anota_ft_home_home,
+    prob_anota_ft_home_visit,
+    prob_anota_ft_home,
+    prob_anota_ht_home_home,
+    prob_anota_ht_home_visit,
+    prob_anota_ht_home,
+    prob_anota_2ht_home_home,
+    prob_anota_2ht_home_visit,
+    prob_anota_2ht_home,
+    prob_concede_ft_home_home,
+    prob_concede_ft_home_visit,
+    prob_concede_ft_home,
+    prob_concede_ht_home_home,
+    prob_concede_ht_home_visit,
+    prob_concede_ht_home,
+    prob_concede_2ht_home_home,
+    prob_concede_2ht_home_visit,
+    prob_concede_2ht_home,
+    prob_aem_home_home,
+    prob_aem_home_visit,
+    prob_aem_home,
+    prob_anota_15_ft_home_home,
+    prob_anota_15_ft_home_visit,
+    prob_anota_15_ft_home,
+    prob_concede_15_ft_home_home,
+    prob_concede_15_ft_home_visit,
+    prob_concede_15_ft_home,
+    prob_over_25_ft_home_home,
+    prob_over_25_ft_home_visit,
+    prob_over_25_ft_home) = calcular_prob_anota_concede_gol(num_total_match_home,
+                                                num_total_match_home_home,
+                                                num_total_match_home_visit,
+                                                matches_anota_ft_home,
+                                                matches_anota_ft_visit,
+                                                matches_anota_ft,
+                                                matches_anota_ht_home,
+                                                matches_anota_ht_visit,
+                                                matches_anota_ht,
+                                                matches_anota_2ht_home,
+                                                matches_anota_2ht_visit,
+                                                matches_anota_2ht,
+                                                matches_concede_ft_home,
+                                                matches_concede_ft_visit,
+                                                matches_concede_ft,
+                                                matches_concede_ht_home,
+                                                matches_concede_ht_visit,
+                                                matches_concede_ht,
+                                                matches_concede_2ht_home,
+                                                matches_concede_2ht_visit,
+                                                matches_concede_2ht,
+                                                matches_aem_home,
+                                                matches_aem_visit,
+                                                matches_aem,
+                                                matches_anota_15_ft_home,
+                                                matches_anota_15_ft_visit,
+                                                matches_anota_15_ft,
+                                                matches_concede_15_ft_home,
+                                                matches_concede_15_ft_visit,
+                                                matches_concede_15_ft,
+                                                matches_over_25_ft_home,
+                                                matches_over_25_ft_visit,
+                                                matches_over_25_ft)
     
-    (matches_anota_ft,
-     matches_anota_ht,
-     matches_anota_2ht,
-     matches_concede_ft,
-     matches_concede_ht,
-     matches_concede_2ht) = get_matches_home_anota_concede_gol(visit_home,visit_visit)
+    (matches_anota_ft_home,
+    matches_anota_ft_visit,
+    matches_anota_ft,
+    matches_anota_ht_home,
+    matches_anota_ht_visit,
+    matches_anota_ht,
+    matches_anota_2ht_home,
+    matches_anota_2ht_visit,
+    matches_anota_2ht,
+    matches_concede_ft_home,
+    matches_concede_ft_visit,
+    matches_concede_ft,
+    matches_concede_ht_home,
+    matches_concede_ht_visit,
+    matches_concede_ht,
+    matches_concede_2ht_home,
+    matches_concede_2ht_visit,
+    matches_concede_2ht,
+    matches_aem_home,
+    matches_aem_visit,
+    matches_aem,
+    matches_anota_15_ft_home,
+    matches_anota_15_ft_visit,
+    matches_anota_15_ft,
+    matches_concede_15_ft_home,
+    matches_concede_15_ft_visit,
+    matches_concede_15_ft,
+    matches_over_25_ft_home,
+    matches_over_25_ft_visit,
+    matches_over_25_ft) = get_matches_anota_concede_gol(visit_home,visit_visit)
     
-    (prob_visitante_anota_ft,
-     prob_visitante_anota_ht,
-     prob_visitante_anota_2ht,
-     prob_visitante_concede_ft,
-     prob_visitante_concede_ht,
-     prob_visitante_concede_2ht) = calcular_prob_anota_concede_gol(num_total_match_visit,
-                                                                   matches_anota_ft,
-                                                                   matches_anota_ht,
-                                                                   matches_anota_2ht,
-                                                                   matches_concede_ft,
-                                                                   matches_concede_ht,
-                                                                   matches_concede_2ht)
+    (prob_anota_ft_visit_home,
+    prob_anota_ft_visit_visit,
+    prob_anota_ft_visit,
+    prob_anota_ht_visit_home,
+    prob_anota_ht_visit_visit,
+    prob_anota_ht_visit,
+    prob_anota_2ht_visit_home,
+    prob_anota_2ht_visit_visit,
+    prob_anota_2ht_visit,
+    prob_concede_ft_visit_home,
+    prob_concede_ft_visit_visit,
+    prob_concede_ft_visit,
+    prob_concede_ht_visit_home,
+    prob_concede_ht_visit_visit,
+    prob_concede_ht_visit,
+    prob_concede_2ht_visit_home,
+    prob_concede_2ht_visit_visit,
+    prob_concede_2ht_visit,
+    prob_aem_visit_home,
+    prob_aem_visit_visit,
+    prob_aem_visit,
+    prob_anota_15_ft_visit_home,
+    prob_anota_15_ft_visit_visit,
+    prob_anota_15_ft_visit,
+    prob_concede_15_ft_visit_home,
+    prob_concede_15_ft_visit_visit,
+    prob_concede_15_ft_visit,
+    prob_over_25_ft_visit_home,
+    prob_over_25_ft_visit_visit,
+    prob_over_25_ft_visit) = calcular_prob_anota_concede_gol(num_total_match_visit,
+                                                num_total_match_visit_home,
+                                                num_total_match_visit_visit,
+                                                matches_anota_ft_home,
+                                                matches_anota_ft_visit,
+                                                matches_anota_ft,
+                                                matches_anota_ht_home,
+                                                matches_anota_ht_visit,
+                                                matches_anota_ht,
+                                                matches_anota_2ht_home,
+                                                matches_anota_2ht_visit,
+                                                matches_anota_2ht,
+                                                matches_concede_ft_home,
+                                                matches_concede_ft_visit,
+                                                matches_concede_ft,
+                                                matches_concede_ht_home,
+                                                matches_concede_ht_visit,
+                                                matches_concede_ht,
+                                                matches_concede_2ht_home,
+                                                matches_concede_2ht_visit,
+                                                matches_concede_2ht,
+                                                matches_aem_home,
+                                                matches_aem_visit,
+                                                matches_aem,
+                                                matches_anota_15_ft_home,
+                                                matches_anota_15_ft_visit,
+                                                matches_anota_15_ft,
+                                                matches_concede_15_ft_home,
+                                                matches_concede_15_ft_visit,
+                                                matches_concede_15_ft,
+                                                matches_over_25_ft_home,
+                                                matches_over_25_ft_visit,
+                                                matches_over_25_ft)
+    
+
     # over y aem --------------------------------------------------------
     num_match_over_05_ht = 0
     num_match_over_15_ht = 0
@@ -260,18 +610,66 @@ def get_matches_both_team(obj):
             num_total_match_empate_visit,
             num_total_match_home,
             num_total_match_visit,
-            prob_local_anota_ft,
-            prob_local_anota_ht,
-            prob_local_anota_2ht,
-            prob_local_concede_ft,
-            prob_local_concede_ht,
-            prob_local_concede_2ht,
-            prob_visitante_anota_ft,
-            prob_visitante_anota_ht,
-            prob_visitante_anota_2ht,
-            prob_visitante_concede_ft,
-            prob_visitante_concede_ht,
-            prob_visitante_concede_2ht)
+            prob_anota_ft_home_home,
+            prob_anota_ft_home_visit,
+            prob_anota_ft_home,
+            prob_anota_ht_home_home,
+            prob_anota_ht_home_visit,
+            prob_anota_ht_home,
+            prob_anota_2ht_home_home,
+            prob_anota_2ht_home_visit,
+            prob_anota_2ht_home,
+            prob_concede_ft_home_home,
+            prob_concede_ft_home_visit,
+            prob_concede_ft_home,
+            prob_concede_ht_home_home,
+            prob_concede_ht_home_visit,
+            prob_concede_ht_home,
+            prob_concede_2ht_home_home,
+            prob_concede_2ht_home_visit,
+            prob_concede_2ht_home,
+            prob_aem_home_home,
+            prob_aem_home_visit,
+            prob_aem_home,
+            prob_anota_15_ft_home_home,
+            prob_anota_15_ft_home_visit,
+            prob_anota_15_ft_home,
+            prob_concede_15_ft_home_home,
+            prob_concede_15_ft_home_visit,
+            prob_concede_15_ft_home,
+            prob_over_25_ft_home_home,
+            prob_over_25_ft_home_visit,
+            prob_over_25_ft_home,
+            prob_anota_ft_visit_home,
+            prob_anota_ft_visit_visit,
+            prob_anota_ft_visit,
+            prob_anota_ht_visit_home,
+            prob_anota_ht_visit_visit,
+            prob_anota_ht_visit,
+            prob_anota_2ht_visit_home,
+            prob_anota_2ht_visit_visit,
+            prob_anota_2ht_visit,
+            prob_concede_ft_visit_home,
+            prob_concede_ft_visit_visit,
+            prob_concede_ft_visit,
+            prob_concede_ht_visit_home,
+            prob_concede_ht_visit_visit,
+            prob_concede_ht_visit,
+            prob_concede_2ht_visit_home,
+            prob_concede_2ht_visit_visit,
+            prob_concede_2ht_visit,
+            prob_aem_visit_home,
+            prob_aem_visit_visit,
+            prob_aem_visit,
+            prob_anota_15_ft_visit_home,
+            prob_anota_15_ft_visit_visit,
+            prob_anota_15_ft_visit,
+            prob_concede_15_ft_visit_home,
+            prob_concede_15_ft_visit_visit,
+            prob_concede_15_ft_visit,
+            prob_over_25_ft_visit_home,
+            prob_over_25_ft_visit_visit,
+            prob_over_25_ft_visit)
         
 
 # funcion que calcula el numero de partidos que se ha dado el over
@@ -436,36 +834,84 @@ def get_matches_strategy(matches,strategy):
     for match in matches:
         cumple = True
         (total_matches,
-        num_match_over_05_ht,
-        num_match_over_15_ht,
-        num_match_over_05_ft,
-        num_match_over_15_ft,
-        num_match_over_25_ft,
-        num_match_over_35_ft,
-        num_match_over_05_mitad2,
-        num_match_aem_ft,
-        num_match_aem_ht,
-        num_match_aem_ht2,
-        num_total_match_win_home,
-        num_total_match_lose_visit,
-        num_total_match_win_visit,
-        num_total_match_lose_home,
-        num_total_match_empate_home,
-        num_total_match_empate_visit,
-        num_total_match_home,
-        num_total_match_visit,
-        prob_local_anota_ft,
-        prob_local_anota_ht,
-        prob_local_anota_2ht,
-        prob_local_concede_ft,
-        prob_local_concede_ht,
-        prob_local_concede_2ht,
-        prob_visitante_anota_ft,
-        prob_visitante_anota_ht,
-        prob_visitante_anota_2ht,
-        prob_visitante_concede_ft,
-        prob_visitante_concede_ht,
-        prob_visitante_concede_2ht) = get_matches_both_team(match)
+            num_match_over_05_ht,
+            num_match_over_15_ht,
+            num_match_over_05_ft,
+            num_match_over_15_ft,
+            num_match_over_25_ft,
+            num_match_over_35_ft,
+            num_match_over_05_mitad2,
+            num_match_aem_ft,
+            num_match_aem_ht,
+            num_match_aem_ht2,
+            num_total_match_win_home,
+            num_total_match_lose_visit,
+            num_total_match_win_visit,
+            num_total_match_lose_home,
+            num_total_match_empate_home,
+            num_total_match_empate_visit,
+            num_total_match_home,
+            num_total_match_visit,
+            prob_anota_ft_home_home,
+            prob_anota_ft_home_visit,
+            prob_anota_ft_home,
+            prob_anota_ht_home_home,
+            prob_anota_ht_home_visit,
+            prob_anota_ht_home,
+            prob_anota_2ht_home_home,
+            prob_anota_2ht_home_visit,
+            prob_anota_2ht_home,
+            prob_concede_ft_home_home,
+            prob_concede_ft_home_visit,
+            prob_concede_ft_home,
+            prob_concede_ht_home_home,
+            prob_concede_ht_home_visit,
+            prob_concede_ht_home,
+            prob_concede_2ht_home_home,
+            prob_concede_2ht_home_visit,
+            prob_concede_2ht_home,
+            prob_aem_home_home,
+            prob_aem_home_visit,
+            prob_aem_home,
+            prob_anota_15_ft_home_home,
+            prob_anota_15_ft_home_visit,
+            prob_anota_15_ft_home,
+            prob_concede_15_ft_home_home,
+            prob_concede_15_ft_home_visit,
+            prob_concede_15_ft_home,
+            prob_over_25_ft_home_home,
+            prob_over_25_ft_home_visit,
+            prob_over_25_ft_home,
+            prob_anota_ft_visit_home,
+            prob_anota_ft_visit_visit,
+            prob_anota_ft_visit,
+            prob_anota_ht_visit_home,
+            prob_anota_ht_visit_visit,
+            prob_anota_ht_visit,
+            prob_anota_2ht_visit_home,
+            prob_anota_2ht_visit_visit,
+            prob_anota_2ht_visit,
+            prob_concede_ft_visit_home,
+            prob_concede_ft_visit_visit,
+            prob_concede_ft_visit,
+            prob_concede_ht_visit_home,
+            prob_concede_ht_visit_visit,
+            prob_concede_ht_visit,
+            prob_concede_2ht_visit_home,
+            prob_concede_2ht_visit_visit,
+            prob_concede_2ht_visit,
+            prob_aem_visit_home,
+            prob_aem_visit_visit,
+            prob_aem_visit,
+            prob_anota_15_ft_visit_home,
+            prob_anota_15_ft_visit_visit,
+            prob_anota_15_ft_visit,
+            prob_concede_15_ft_visit_home,
+            prob_concede_15_ft_visit_visit,
+            prob_concede_15_ft_visit,
+            prob_over_25_ft_visit_home,
+            prob_over_25_ft_visit_visit,
+            prob_over_25_ft_visit) = get_matches_both_team(match)
 
         (prob_over_05_ht,
         prob_over_15_ht,
@@ -500,43 +946,43 @@ def get_matches_strategy(matches,strategy):
                                     num_total_match_empate_visit)
         
         # ya tenemos todas las probabilidades del partido iterado. ahora hay que comparar esas prob con las de la estrategia
-        print(match)
+      
         if strategy_user.valor_ini_over_05_ht != None and cumple:
             if prob_over_05_ht >= strategy_user.valor_ini_over_05_ht and prob_over_05_ht <= strategy_user.valor_fin_over_05_ht:
                 cumple = True
             else:
                 cumple = False
-            print('over 05 ht {}'.format(cumple))
+          
         if strategy_user.valor_ini_over_15_ht != None and cumple:
             if prob_over_15_ht >= strategy_user.valor_ini_over_15_ht and prob_over_15_ht <= strategy_user.valor_fin_over_15_ht:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
+          
         if strategy_user.valor_ini_over_05_ft != None and cumple:
             if prob_over_05_ft >= strategy_user.valor_ini_over_05_ft and prob_over_05_ft <= strategy_user.valor_fin_over_05_ft:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
+        
         if strategy_user.valor_ini_over_15_ft != None and cumple:
             if prob_over_15_ft >= strategy_user.valor_ini_over_15_ft and prob_over_15_ft <= strategy_user.valor_fin_over_15_ft:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
+     
         if strategy_user.valor_ini_over_25_ft != None and cumple:
             if prob_over_25_ft >= strategy_user.valor_ini_over_25_ft and prob_over_25_ft <= strategy_user.valor_fin_over_25_ft:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
+        
         if strategy_user.valor_ini_aem != None and cumple:
             if prob_aem_ft >= strategy_user.valor_ini_aem and prob_aem_ft <= strategy_user.valor_fin_aem:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
+     
         if strategy_user.valor_ini_local_favorito != None and cumple:
             if prob_win_home > prob_win_visit:
                 if prob_win_home >= strategy_user.valor_ini_local_favorito and prob_win_home <= strategy_user.valor_fin_local_favorito:
@@ -545,7 +991,7 @@ def get_matches_strategy(matches,strategy):
                     cumple = False
             else:
                 cumple = False
-            print(cumple)     
+    
         if strategy_user.valor_ini_visitante_favorito != None and cumple:
             if prob_win_visit > prob_win_home:
                 if prob_win_visit >= strategy_user.valor_ini_visitante_favorito and prob_win_visit <= strategy_user.valor_fin_visitante_favorito:
@@ -554,86 +1000,82 @@ def get_matches_strategy(matches,strategy):
                     cumple = False
             else:
                 cumple = False
-            print(cumple)
+      
         if strategy_user.valor_ini_local_anota_ft != None and cumple:
-            if prob_local_anota_ft >= strategy_user.valor_ini_local_anota_ft and prob_local_anota_ft <= strategy_user.valor_fin_local_anota_ft:
+            if prob_anota_ft_home >= strategy_user.valor_ini_local_anota_ft and prob_anota_ft_home <= strategy_user.valor_fin_local_anota_ft:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
+      
         if strategy_user.valor_ini_local_anota_mitad_1 != None and cumple:
-            if prob_local_anota_ht >= strategy_user.valor_ini_local_anota_mitad_1 and prob_local_anota_ht <= strategy_user.valor_fin_local_anota_mitad_1:
+            if prob_anota_ht_home >= strategy_user.valor_ini_local_anota_mitad_1 and prob_anota_ht_home <= strategy_user.valor_fin_local_anota_mitad_1:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
+   
         if strategy_user.valor_ini_local_anota_mitad_2 != None and cumple:
-            if prob_local_anota_2ht >= strategy_user.valor_ini_local_anota_mitad_2 and prob_local_anota_2ht <= strategy_user.valor_fin_local_anota_mitad_2:
+            if prob_anota_2ht_home >= strategy_user.valor_ini_local_anota_mitad_2 and prob_anota_2ht_home <= strategy_user.valor_fin_local_anota_mitad_2:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
+      
         if strategy_user.valor_ini_visitante_anota_ft != None and cumple:
-            if prob_visitante_anota_ft >= strategy_user.valor_ini_visitante_anota_ft and prob_visitante_anota_ft <= strategy_user.valor_fin_visitante_anota_ft:
+            if prob_anota_ft_visit >= strategy_user.valor_ini_visitante_anota_ft and prob_anota_ft_visit <= strategy_user.valor_fin_visitante_anota_ft:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
+        
         if strategy_user.valor_ini_visitante_anota_mitad_1 != None and cumple:
-            if prob_visitante_anota_ht >= strategy_user.valor_ini_visitante_anota_mitad_1 and prob_visitante_anota_ht <= strategy_user.valor_fin_visitante_anota_mitad_1:
+            if prob_anota_ht_visit >= strategy_user.valor_ini_visitante_anota_mitad_1 and prob_anota_ht_visit <= strategy_user.valor_fin_visitante_anota_mitad_1:
                 cumple = True
             else:
                 cumple = False
-            print(cumple)
-
-        if strategy_user.valor_ini_visitante_anota_mitad_2 != None and cumple:
-            if prob_visitante_anota_2ht >= strategy_user.valor_ini_visitante_anota_mitad_2 and prob_visitante_anota_2ht <= strategy_user.valor_fin_visitante_anota_mitad_2:
-                cumple = True
-            else:
-                cumple = False
-            print(cumple)
-        # toca ahora concede local y despues visitante
-        if strategy_user.valor_ini_local_concede_ft != None and cumple:
-            if prob_local_concede_ft >= strategy_user.valor_ini_local_concede_ft and prob_local_concede_ft <= strategy_user.valor_fin_concede_anota_ft:
-                cumple = True
-            else:
-                cumple = False
-            print(cumple)
-        if strategy_user.valor_ini_local_concede_mitad_1 != None and cumple:
-            if prob_local_concede_ht >= strategy_user.valor_ini_local_concede_mitad_1 and prob_local_concede_ht <= strategy_user.valor_fin_local_concede_mitad_1:
-                cumple = True
-            else:
-                cumple = False
-            print(cumple)
-        if strategy_user.valor_ini_local_concede_mitad_2 != None and cumple:
-            if prob_local_concede_2ht >= strategy_user.valor_ini_local_concede_mitad_2 and prob_local_concede_2ht <= strategy_user.valor_fin_local_concede_mitad_2:
-                cumple = True
-            else:
-                cumple = False
-            print(cumple)
-        if strategy_user.valor_ini_visitante_concede_ft != None and cumple:
-            if prob_visitante_concede_ft >= strategy_user.valor_ini_visitante_concede_ft and prob_visitante_concede_ft <= strategy_user.valor_fin_visitante_concede_ft:
-                cumple = True
-            else:
-                cumple = False
-            print(cumple)
-        if strategy_user.valor_ini_visitante_concede_mitad_1 != None and cumple:
-            if prob_visitante_concede_ht >= strategy_user.valor_ini_visitante_concede_mitad_1 and prob_visitante_concede_ht <= strategy_user.valor_fin_visitante_concede_mitad_1:
-                cumple = True
-            else:
-                cumple = False
-            print(cumple)
-
-        if strategy_user.valor_ini_visitante_concede_mitad_2 != None and cumple:
-            if prob_visitante_concede_2ht >= strategy_user.valor_ini_visitante_concede_mitad_2 and prob_visitante_concede_2ht <= strategy_user.valor_fin_visitante_concede_mitad_2:
-                cumple = True
-            else:
-                cumple = False
-            print(cumple)
         
 
-        print('cumple final: {}'.format(cumple))
+        if strategy_user.valor_ini_visitante_anota_mitad_2 != None and cumple:
+            if prob_anota_2ht_visit >= strategy_user.valor_ini_visitante_anota_mitad_2 and prob_anota_2ht_visit <= strategy_user.valor_fin_visitante_anota_mitad_2:
+                cumple = True
+            else:
+                cumple = False
+        
+        # toca ahora concede local y despues visitante
+        if strategy_user.valor_ini_local_concede_ft != None and cumple:
+            if prob_concede_ft_home >= strategy_user.valor_ini_local_concede_ft and prob_concede_ft_home <= strategy_user.valor_fin_concede_anota_ft:
+                cumple = True
+            else:
+                cumple = False
+       
+        if strategy_user.valor_ini_local_concede_mitad_1 != None and cumple:
+            if prob_concede_ht_home >= strategy_user.valor_ini_local_concede_mitad_1 and prob_concede_ht_home <= strategy_user.valor_fin_local_concede_mitad_1:
+                cumple = True
+            else:
+                cumple = False
+      
+        if strategy_user.valor_ini_local_concede_mitad_2 != None and cumple:
+            if prob_concede_2ht_home >= strategy_user.valor_ini_local_concede_mitad_2 and prob_concede_2ht_home <= strategy_user.valor_fin_local_concede_mitad_2:
+                cumple = True
+            else:
+                cumple = False
+    
+        if strategy_user.valor_ini_visitante_concede_ft != None and cumple:
+            if prob_concede_ft_visit >= strategy_user.valor_ini_visitante_concede_ft and prob_concede_ft_visit <= strategy_user.valor_fin_visitante_concede_ft:
+                cumple = True
+            else:
+                cumple = False
+            
+        if strategy_user.valor_ini_visitante_concede_mitad_1 != None and cumple:
+            if prob_concede_ht_visit >= strategy_user.valor_ini_visitante_concede_mitad_1 and prob_concede_ht_visit <= strategy_user.valor_fin_visitante_concede_mitad_1:
+                cumple = True
+            else:
+                cumple = False
+           
 
+        if strategy_user.valor_ini_visitante_concede_mitad_2 != None and cumple:
+            if prob_concede_2ht_visit >= strategy_user.valor_ini_visitante_concede_mitad_2 and prob_concede_2ht_visit <= strategy_user.valor_fin_visitante_concede_mitad_2:
+                cumple = True
+            else:
+                cumple = False
+                
         if cumple == True:
             matches_strategy.append(match)
     
@@ -653,6 +1095,12 @@ class NextMatchesListView(ListView):
         unplayed_matches = Match.objects.filter(league=league_id,gol_home_ht=None)  # aqui obtengo los que no se han jugado aun
         matches = get_next_matches_league(unplayed_matches)
         context['match_list'] = matches
+        if self.request.user.is_authenticated:
+            context['user'] = self.request.user
+            profile = Profile.objects.get(user=self.request.user)
+            context['profile'] = profile
+        leagues = League.objects.all()
+        context['leagues'] = leagues
         
         return context
 
@@ -672,36 +1120,84 @@ class MatchDetailView(DetailView):
         # ------------------------------------ over ht y ft ----------------------------------------
         
         (total_matches,
-        num_match_over_05_ht,
-        num_match_over_15_ht, 
-        num_match_over_05_ft, 
-        num_match_over_15_ft, 
-        num_match_over_25_ft, 
-        num_match_over_35_ft, 
-        num_match_over_05_mitad2, 
-        num_match_aem_ft, 
-        num_match_aem_ht, 
-        num_match_aem_ht2,
-        num_total_match_win_home,
-        num_total_match_lose_visit,
-        num_total_match_win_visit,
-        num_total_match_lose_home,
-        num_total_match_empate_home,
-        num_total_match_empate_visit,
-        num_total_match_home,
-        num_total_match_visit,
-        prob_local_anota_ft,
-        prob_local_anota_ht,
-        prob_local_anota_2ht,
-        prob_local_concede_ft,
-        prob_local_concede_ht,
-        prob_local_concede_2ht,
-        prob_visitante_anota_ft,
-        prob_visitante_anota_ht,
-        prob_visitante_anota_2ht,
-        prob_visitante_concede_ft,
-        prob_visitante_concede_ht,
-        prob_visitante_concede_2ht) = get_matches_both_team(self.get_object())
+            num_match_over_05_ht,
+            num_match_over_15_ht,
+            num_match_over_05_ft,
+            num_match_over_15_ft,
+            num_match_over_25_ft,
+            num_match_over_35_ft,
+            num_match_over_05_mitad2,
+            num_match_aem_ft,
+            num_match_aem_ht,
+            num_match_aem_ht2,
+            num_total_match_win_home,
+            num_total_match_lose_visit,
+            num_total_match_win_visit,
+            num_total_match_lose_home,
+            num_total_match_empate_home,
+            num_total_match_empate_visit,
+            num_total_match_home,
+            num_total_match_visit,
+            prob_anota_ft_home_home,
+            prob_anota_ft_home_visit,
+            prob_anota_ft_home,
+            prob_anota_ht_home_home,
+            prob_anota_ht_home_visit,
+            prob_anota_ht_home,
+            prob_anota_2ht_home_home,
+            prob_anota_2ht_home_visit,
+            prob_anota_2ht_home,
+            prob_concede_ft_home_home,
+            prob_concede_ft_home_visit,
+            prob_concede_ft_home,
+            prob_concede_ht_home_home,
+            prob_concede_ht_home_visit,
+            prob_concede_ht_home,
+            prob_concede_2ht_home_home,
+            prob_concede_2ht_home_visit,
+            prob_concede_2ht_home,
+            prob_aem_home_home,
+            prob_aem_home_visit,
+            prob_aem_home,
+            prob_anota_15_ft_home_home,
+            prob_anota_15_ft_home_visit,
+            prob_anota_15_ft_home,
+            prob_concede_15_ft_home_home,
+            prob_concede_15_ft_home_visit,
+            prob_concede_15_ft_home,
+            prob_over_25_ft_home_home,
+            prob_over_25_ft_home_visit,
+            prob_over_25_ft_home,
+            prob_anota_ft_visit_home,
+            prob_anota_ft_visit_visit,
+            prob_anota_ft_visit,
+            prob_anota_ht_visit_home,
+            prob_anota_ht_visit_visit,
+            prob_anota_ht_visit,
+            prob_anota_2ht_visit_home,
+            prob_anota_2ht_visit_visit,
+            prob_anota_2ht_visit,
+            prob_concede_ft_visit_home,
+            prob_concede_ft_visit_visit,
+            prob_concede_ft_visit,
+            prob_concede_ht_visit_home,
+            prob_concede_ht_visit_visit,
+            prob_concede_ht_visit,
+            prob_concede_2ht_visit_home,
+            prob_concede_2ht_visit_visit,
+            prob_concede_2ht_visit,
+            prob_aem_visit_home,
+            prob_aem_visit_visit,
+            prob_aem_visit,
+            prob_anota_15_ft_visit_home,
+            prob_anota_15_ft_visit_visit,
+            prob_anota_15_ft_visit,
+            prob_concede_15_ft_visit_home,
+            prob_concede_15_ft_visit_visit,
+            prob_concede_15_ft_visit,
+            prob_over_25_ft_visit_home,
+            prob_over_25_ft_visit_visit,
+            prob_over_25_ft_visit) = get_matches_both_team(self.get_object())
 
         (prob_over_05_ht,
         prob_over_15_ht,
@@ -734,6 +1230,8 @@ class MatchDetailView(DetailView):
                                     num_total_match_lose_home,
                                     num_total_match_empate_home,
                                     num_total_match_empate_visit)
+        
+        
             
             
         context['prob_win_home'] = round(prob_win_home,2)
@@ -862,6 +1360,69 @@ class MatchDetailView(DetailView):
         else:
             context['cuota_aem_ht2_no'] = 0
 
+
+        context['prob_anota_ft_home_home'] = prob_anota_ft_home_home
+        context['prob_anota_ft_home_visit'] = prob_anota_ft_home_visit
+        context['prob_anota_ft_home'] = prob_anota_ft_home
+        context['prob_anota_ht_home_home'] = prob_anota_ht_home_home
+        context['prob_anota_ht_home_visit'] = prob_anota_ht_home_visit
+        context['prob_anota_ht_home'] = prob_anota_ht_home
+        context['prob_anota_2ht_home_home'] = prob_anota_2ht_home_home
+        context['prob_anota_2ht_home_visit'] = prob_anota_2ht_home_visit
+        context['prob_anota_2ht_home'] = prob_anota_2ht_home
+        context['prob_concede_ft_home_home'] = prob_concede_ft_home_home
+        context['prob_concede_ft_home_visit'] = prob_concede_ft_home_visit
+        context['prob_concede_ft_home'] = prob_concede_ft_home
+        context['prob_concede_ht_home_home'] = prob_concede_ht_home_home
+        context['prob_concede_ht_home_visit'] = prob_concede_ht_home_visit
+        context['prob_concede_ht_home'] = prob_concede_ht_home
+        context['prob_concede_2ht_home_home'] = prob_concede_2ht_home_home
+        context['prob_concede_2ht_home_visit'] = prob_concede_2ht_home_visit
+        context['prob_concede_2ht_home'] = prob_concede_2ht_home
+        context['prob_aem_home_home'] = prob_aem_home_home
+        context['prob_aem_home_visit'] = prob_aem_home_visit
+        context['prob_aem_home'] = prob_aem_home
+        context['prob_anota_15_ft_home_home'] = prob_anota_15_ft_home_home
+        context['prob_anota_15_ft_home_visit'] = prob_anota_15_ft_home_visit
+        context['prob_anota_15_ft_home'] = prob_anota_15_ft_home
+        context['prob_concede_15_ft_home_home'] = prob_concede_15_ft_home_home
+        context['prob_concede_15_ft_home_visit'] = prob_concede_15_ft_home_visit
+        context['prob_concede_15_ft_home'] = prob_concede_15_ft_home
+        context['prob_over_25_ft_home_home'] = prob_over_25_ft_home_home
+        context['prob_over_25_ft_home_visit'] = prob_over_25_ft_home_visit
+        context['prob_over_25_ft_home'] = prob_over_25_ft_home
+        
+        context['prob_anota_ft_visit_home'] = prob_anota_ft_visit_home
+        context['prob_anota_ft_visit_visit'] = prob_anota_ft_visit_visit
+        context['prob_anota_ft_visit'] = prob_anota_ft_visit
+        context['prob_anota_ht_visit_home'] = prob_anota_ht_visit_home
+        context['prob_anota_ht_visit_visit'] = prob_anota_ht_visit_visit
+        context['prob_anota_ht_visit'] = prob_anota_ht_visit
+        context['prob_anota_2ht_visit_home'] = prob_anota_2ht_visit_home
+        context['prob_anota_2ht_visit_visit'] = prob_anota_2ht_visit_visit
+        context['prob_anota_2ht_visit'] = prob_anota_2ht_visit
+        context['prob_concede_ft_visit_home'] = prob_concede_ft_visit_home
+        context['prob_concede_ft_visit_visit'] = prob_concede_ft_visit_visit
+        context['prob_concede_ft_visit'] = prob_concede_ft_visit
+        context['prob_concede_ht_visit_home'] = prob_concede_ht_visit_home
+        context['prob_concede_ht_visit_visit'] = prob_concede_ht_visit_visit
+        context['prob_concede_ht_visit'] = prob_concede_ht_visit
+        context['prob_concede_2ht_visit_home'] = prob_concede_2ht_visit_home
+        context['prob_concede_2ht_visit_visit'] = prob_concede_2ht_visit_visit
+        context['prob_concede_2ht_visit'] = prob_concede_2ht_visit
+        context['prob_aem_visit_home'] = prob_aem_visit_home
+        context['prob_aem_visit_visit'] = prob_aem_visit_visit
+        context['prob_aem_visit'] = prob_aem_visit
+        context['prob_anota_15_ft_visit_home'] = prob_anota_15_ft_visit_home
+        context['prob_anota_15_ft_visit_visit'] = prob_anota_15_ft_visit_visit
+        context['prob_anota_15_ft_visit'] = prob_anota_15_ft_visit
+        context['prob_concede_15_ft_visit_home'] = prob_concede_15_ft_visit_home
+        context['prob_concede_15_ft_visit_visit'] = prob_concede_15_ft_visit_visit
+        context['prob_concede_15_ft_visit'] = prob_concede_15_ft_visit
+        context['prob_over_25_ft_visit_home'] = prob_over_25_ft_visit_home
+        context['prob_over_25_ft_visit_visit'] = prob_over_25_ft_visit_visit
+        context['prob_over_25_ft_visit'] = prob_over_25_ft_visit
+
         return context
 
 def updateLive(request, pk):
@@ -927,6 +1488,7 @@ def MatchesbyleaguesDate(request):
                 })
     else:
         form = MatchesForm(user=request.user)
+
     return render(request, 'forecasts/matches_leagues_date_list.html', {
             'title': title,
             'form': form})
@@ -955,6 +1517,253 @@ class StrategyCreateView(LoginRequiredMixin, CreateView):
         messages.success(self.request, 'Estrategia creada exitosamente.')
 
         return response
+    
+    def get_form(self, form_class=None):
+        form = super(StrategyCreateView, self).get_form()
+        # Modificar en tiempo real el formulario si el usuario está en periodo de prueba de 7 dias
+        # not self.request.user.is_staff and 
+        if self.request.user.profile.is_trial:
+            
+            
+            form.fields['valor_ini_over_25_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_over_25_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            
+            form.fields['valor_ini_aem'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_aem'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_local_anota_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_local_anota_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_local_anota_mitad_1'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_local_anota_mitad_1'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_local_anota_mitad_2'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_local_anota_mitad_2'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_visitante_anota_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_visitante_anota_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_visitante_anota_mitad_1'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_visitante_anota_mitad_1'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_visitante_anota_mitad_2'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_visitante_anota_mitad_2'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_local_concede_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_local_concede_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_local_concede_mitad_1'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_local_concede_mitad_1'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_local_concede_mitad_2'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_local_concede_mitad_2'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_visitante_concede_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_visitante_concede_ft'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_visitante_concede_mitad_1'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_visitante_concede_mitad_1'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_visitante_concede_mitad_2'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_visitante_concede_mitad_2'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_local_favorito'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_local_favorito'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_ini_visitante_favorito'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            form.fields['valor_fin_visitante_favorito'].widget = forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'min':'0',
+                    'max': '100',
+                    'disabled':'true'
+                })
+            
+            
+        
+        return form
+    
+
+        
+
+
+
+
+
+
+
 
 # Vista para listar las estrategias de un usuario logueado
 class StrategiesListView(ListView):
@@ -967,7 +1776,7 @@ class StrategiesListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Mis Estrategias' 
+        context['title'] = 'Estrategias' 
         return context
     
     

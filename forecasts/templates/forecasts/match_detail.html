@@ -4,15 +4,15 @@
 {% block content %}
 
 <!-- Content Row -->
-<div class="row">
+<div class="row justify-content-center">
     
     <h1>
         {{title}}
-        <img src="{{match.home_team.image.url}}" class="img-fluid" alt="">  {{match.home_team}} - 
-        <img src="{{match.visit_team.image.url}}" class="img-fluid" alt="">  {{match.visit_team}}
+        <img src="{{match.home_team.image.url}}" class="img-fluid" alt="">  <a href="#home_team">{{match.home_team}}</a> - 
+        <img src="{{match.visit_team.image.url}}" class="img-fluid" alt="">  <a href="#visit_team">{{match.visit_team}}</a>
     </h1>
 
-        <div class='col-12'>
+        <div class='col-md-12 text-center'>
             <p>{{match.league.contry}} - {{match.league}} - {{match.date}}</p>
 
             <table class="table table-striped">
@@ -34,8 +34,8 @@
             </table>
         </div>
 
-        <div class='col-12 mt-3 mb-3'>
-            <h5>Calculadora Probabilidad goles 2º Tiempo</h5>
+        <div class='col-8 mt-3 mb-3 text-center shadow-lg p-3 mb-5 bg-body rounded'>
+            <h5 class="mb-5"><strong>Calculadora Probabilidad goles 2º Tiempo</strong></h5>
                 <div class="row">
                     <div class="col">
                         {{match.home_team}}
@@ -46,7 +46,7 @@
                         <input type="number" min=0 class="form-control" aria-label="visit_gol_ht" id="visit_gol_ht" aria-describedby="basic-addon1"> 
                     </div>
                 </div>
-                <p>* Introduce resultado al descanso y pulsa el botón para ver la probabilidad de goles en el segundo tiempo</p>
+                <p class="mt-5">* Introduce resultado al descanso y pulsa el botón para ver la probabilidad de goles en el segundo tiempo</p>
                 <div class="col text-center mt-4">
                     <button id="btn-prob-gol-2ht" class="btn btn-primary btn-sm btn-block">Calcular probilidad</button>
                     
@@ -92,7 +92,7 @@
             </script>
         </div>
         
-        <div class='col-12'>
+        <div class='col-md-12 text-center'>
         
             <table class="table table-striped">
                 <thead>
@@ -170,6 +170,161 @@
                 </tbody>
             </table>
 
+        </div>
+
+        <div class='col-md-12 text-center'>
+            <h5 class="mb-5"><strong>Información adicional</strong></h5>
+            <img src="{{match.home_team.image.url}}" class="img-fluid" alt="" id='home_team'>  <strong>{{match.home_team}}</strong>
+
+
+            <table class="table table-striped mt-4">
+                <thead>
+                    <tr>
+                        <th scope="col">Mercado</th>
+                        <th scope="col">Local</th>
+                        <th scope="col">Visitante</th>
+                        <th scope="col">General</th>
+                    </tr>
+                </thead> 
+                <tbody>
+                    <tr>
+                        <td>Anota + 0.5 goles FT</td>
+                        <td>{{prob_anota_ft_home_home}}%</td>
+                        <td>{{prob_anota_ft_home_visit}}%</td>
+                        <td>{{prob_anota_ft_home}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Anota + 0.5 goles en 1ª mitad</td>
+                        <td>{{prob_anota_ht_home_home}}%</td>
+                        <td>{{prob_anota_ht_home_visit}}%</td>
+                        <td>{{prob_anota_ht_home}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Anota + 0.5 goles en 2ª mitad</td>
+                        <td>{{prob_anota_2ht_home_home}}%</td>
+                        <td>{{prob_anota_2ht_home_visit}}%</td>
+                        <td>{{prob_anota_2ht_home}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Concede + 0.5 goles FT</td>
+                        <td>{{prob_concede_ft_home_home}}%</td>
+                        <td>{{prob_concede_ft_home_visit}}%</td>
+                        <td>{{prob_concede_ft_home}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Concede + 0.5 goles en 1ª mitad</td>
+                        <td>{{prob_concede_ht_home_home}}%</td>
+                        <td>{{prob_concede_ht_home_visit}}%</td>
+                        <td>{{prob_concede_ht_home}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Concede + 0.5 goles en 2ª mitad</td>
+                        <td>{{prob_concede_2ht_home_home}}%</td>
+                        <td>{{prob_concede_2ht_home_visit}}%</td>
+                        <td>{{prob_concede_2ht_home}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Ambos Equipos Marcan</td>
+                        <td>{{prob_aem_home_home}}%</td>
+                        <td>{{prob_aem_home_visit}}%</td>
+                        <td>{{prob_aem_home}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Anota + 1.5 goles FT</td>
+                        <td>{{prob_anota_15_ft_home_home}}%</td>
+                        <td>{{prob_anota_15_ft_home_visit}}%</td>
+                        <td>{{prob_anota_15_ft_home}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Concede + 1.5 goles FT</td>
+                        <td>{{prob_concede_15_ft_home_home}}%</td>
+                        <td>{{prob_concede_15_ft_home_visit}}%</td>
+                        <td>{{prob_concede_15_ft_home}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Over 2.5 goles FT</td>
+                        <td>{{prob_over_25_ft_home_home}}%</td>
+                        <td>{{prob_over_25_ft_home_visit}}%</td>
+                        <td>{{prob_over_25_ft_home}}%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <img src="{{match.visit_team.image.url}}" class="img-fluid" alt="" id='visit_team'>  <strong>{{match.visit_team}}</strong>
+
+
+            <table class="table table-striped mt-4">
+                <thead>
+                    <tr>
+                        <th scope="col">Mercado</th>
+                        <th scope="col">Local</th>
+                        <th scope="col">Visitante</th>
+                        <th scope="col">General</th>
+                    </tr>
+                </thead> 
+                <tbody>
+                    <tr>
+                        <td>Anota + 0.5 goles FT</td>
+                        <td>{{prob_anota_ft_visit_home}}%</td>
+                        <td>{{prob_anota_ft_visit_visit}}%</td>
+                        <td>{{prob_anota_ft_visit}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Anota + 0.5 goles en 1ª mitad</td>
+                        <td>{{prob_anota_ht_visit_home}}%</td>
+                        <td>{{prob_anota_ht_visit_visit}}%</td>
+                        <td>{{prob_anota_ht_visit}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Anota + 0.5 goles en 2ª mitad</td>
+                        <td>{{prob_anota_2ht_visit_home}}%</td>
+                        <td>{{prob_anota_2ht_visit_visit}}%</td>
+                        <td>{{prob_anota_2ht_visit}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Concede + 0.5 goles FT</td>
+                        <td>{{prob_concede_ft_visit_home}}%</td>
+                        <td>{{prob_concede_ft_visit_visit}}%</td>
+                        <td>{{prob_concede_ft_visit}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Concede + 0.5 goles en 1ª mitad</td>
+                        <td>{{prob_concede_ht_visit_home}}%</td>
+                        <td>{{prob_concede_ht_visit_visit}}%</td>
+                        <td>{{prob_concede_ht_visit}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Concede + 0.5 goles en 2ª mitad</td>
+                        <td>{{prob_concede_2ht_visit_home}}%</td>
+                        <td>{{prob_concede_2ht_visit_visit}}%</td>
+                        <td>{{prob_concede_2ht_visit}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Ambos Equipos Marcan</td>
+                        <td>{{prob_aem_visit_home}}%</td>
+                        <td>{{prob_aem_visit_visit}}%</td>
+                        <td>{{prob_aem_visit}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Anota + 1.5 goles FT</td>
+                        <td>{{prob_anota_15_ft_visit_home}}%</td>
+                        <td>{{prob_anota_15_ft_visit_visit}}%</td>
+                        <td>{{prob_anota_15_ft_visit}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Concede + 1.5 goles FT</td>
+                        <td>{{prob_concede_15_ft_visit_home}}%</td>
+                        <td>{{prob_concede_15_ft_visit_visit}}%</td>
+                        <td>{{prob_concede_15_ft_visit}}%</td>
+                    </tr>
+                    <tr>
+                        <td>Over 2.5 goles FT</td>
+                        <td>{{prob_over_25_ft_visit_home}}%</td>
+                        <td>{{prob_over_25_ft_visit_visit}}%</td>
+                        <td>{{prob_over_25_ft_visit}}%</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         
         

@@ -17,8 +17,12 @@
             <p><b>Campaña enviada correctamente</b></p>
         {% endif %}
         <div class="col">
-          <a href="{% url 'subscriber-maintenance-create' %}" class="btn btn-success">Crear Suscriptor</a>
-          <a href="{% url 'campaign-email-form' %}" class="btn btn-secondary">Crear Campaña</a>
+          <a href="{% url 'subscriber-maintenance-create' %}" class="btn btn-light">
+            <img src="{% static 'core/img/nuevo.png' %}" class="img-fluid" title='Nuevo suscriptor' width=40px height=40px alt="Nuevo suscriptor">
+          </a>
+          <a href="{% url 'campaign-email-form' %}" class="btn btn-light">
+            <img src="{% static 'core/img/newsletter.png' %}" class="img-fluid" title='Nueva campaña' width=40px height=40px alt="Nueva campaña">
+          </a>
         </div>
       </div>
     </div>
@@ -37,8 +41,12 @@
               <tr>
                 <td>{{subscriber.email}}</td>
                 <td>                      
-                  <a href="{% url 'subscriber-update' subscriber.id %}" class="btn btn-primary">Editar</a>
-                  <a href="{% url 'subscriber-delete' subscriber.id %}" class="btn btn-danger">Eliminar</a>
+                  <a href="{% url 'subscriber-update' subscriber.id %}" class="btn btn-light">
+                    <img src="{% static 'core/img/editar.png' %}" class="img-fluid" title='Editar suscriptor' width=25px height=20px alt="Editar">
+                  </a>
+                  <a href="{% url 'subscriber-delete' subscriber.id %}" class="btn btn-light">
+                    <img src="{% static 'core/img/papelera.png' %}" class="img-fluid" title='Eliminar suscriptor' width=25px height=20px alt="Eliminar">
+                  </a>
                 </td>
               </tr>
             {% endfor %}

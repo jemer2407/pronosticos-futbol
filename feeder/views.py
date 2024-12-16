@@ -12,6 +12,7 @@ import unicodedata
 import requests
 from forecasts.models import Contry, League, Team, Match
 from feeder.forms import ContryForm, LeagueForm, TeamForm
+from registration.models import Profile
 
 
 url = "https://www.resultados-futbol.com/"
@@ -130,16 +131,11 @@ class MatchesByTeamListView(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Partidos'
         context['first_match'] = True
+        if self.request.user.is_authenticated:
+            context['user'] = self.request.user
+            profile = Profile.objects.get(user=self.request.user)
+            context['profile'] = profile
         return context
-
-
-# vista para obtener los proximos partidos de todas las ligas, ordenarlas por fechas y mostrarlas en la home
-
-
-
-
-# crear la vista para crear los equipos y los partidos de todas las jornadas haciendo web scraping
-
 
 
 def scraper_resultados(request):
@@ -351,6 +347,17 @@ def scraper_data_match(url_league, league, soccer_day):
             date_span = soup_match.find('span',{'class': 'jor-date'})['content']
             date_scraped = datetime.strptime(date_span, "%Y-%m-%dT%H:%M:%S%z")
             date = date_scraped.strftime("%Y-%m-%d")
+
+            goles_tramo_1_10 = 0
+            goles_tramo_11_20 = 0
+            goles_tramo_21_30 = 0
+            goles_tramo_31_40 = 0
+            goles_tramo_41_50 = 0
+            goles_tramo_51_60 = 0
+            goles_tramo_61_70 = 0
+            goles_tramo_71_80 = 0
+            goles_tramo_81_90 = 0
+            goles_tramo_91_final = 0
             # resultado del partido
             
             etiq_div_resul = soup_match.find('div', {'class': 'resultado resultadoH'})
@@ -374,6 +381,7 @@ def scraper_data_match(url_league, league, soccer_day):
                 
         
                     # ------- obtener gol marcado en el trascurso del partido ---------
+                    
                     goles = []
                     if soup_match.find_all('td', {'class': 'mhr-marker'}):
                         etiq_goles = soup_match.find_all('td', {'class': 'mhr-marker'})
@@ -386,6 +394,8 @@ def scraper_data_match(url_league, league, soccer_day):
 
                         # ------- obtener minuto del gol marcado en el trascurso del partido ---------
                         etiq_min_gol = soup_match.find_all('td', {'class': 'mhr-min'})
+
+                              
                         
                         if etiq_min_gol != None:
                             minutos_goles = []
@@ -393,9 +403,31 @@ def scraper_data_match(url_league, league, soccer_day):
                                 if etiq.text != '':
                                     eliminar = "'"
                                     minutos_goles.append(int(etiq.text.replace(eliminar,"")))
-                    
-                    
+                                    min=int(etiq.text.replace(eliminar,""))
+                                    if min <= 10:
+                                        goles_tramo_1_10 += 1
+                                    elif min <= 20:
+                                        goles_tramo_11_20 += 1
+                                    elif min <= 30:
+                                        goles_tramo_21_30 += 1
+                                    elif min <= 40:
+                                        goles_tramo_31_40 += 1
+                                    elif min <= 50:
+                                        goles_tramo_41_50 += 1
+                                    elif min <= 60:
+                                        goles_tramo_51_60 += 1
+                                    elif min <= 70:
+                                        goles_tramo_61_70 += 1
+                                    elif min <= 80:
+                                        goles_tramo_71_80 += 1
+                                    elif min <= 90:
+                                        goles_tramo_81_90 += 1
+                                    elif min > 90:
+                                        goles_tramo_91_final += 1
 
+                        # en minutos_goles estan los minutos en los que se ha marcado gol
+                        
+                        
                         # ------- calcular marcador en el descanso ---------
 
                         marcador_ht = [0,0]
@@ -435,7 +467,17 @@ def scraper_data_match(url_league, league, soccer_day):
                             gol_home_ht=home_gol_ht,
                             gol_visit_ht=visit_gol_ht,
                             gol_home_ft=home_gol_ft,
-                            gol_visit_ft=visit_gol_ft
+                            gol_visit_ft=visit_gol_ft,
+                            goles_tramo_1_10 = goles_tramo_1_10,
+                            goles_tramo_11_20 = goles_tramo_11_20,
+                            goles_tramo_21_30 = goles_tramo_21_30,
+                            goles_tramo_31_40 = goles_tramo_31_40,
+                            goles_tramo_41_50 = goles_tramo_41_50,
+                            goles_tramo_51_60 = goles_tramo_51_60,
+                            goles_tramo_61_70 = goles_tramo_61_70,
+                            goles_tramo_71_80 = goles_tramo_71_80,
+                            goles_tramo_81_90 = goles_tramo_81_90,
+                            goles_tramo_91_final = goles_tramo_91_final
                             )
             match_obj.save()
     else:

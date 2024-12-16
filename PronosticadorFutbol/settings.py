@@ -10,22 +10,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
+import environ
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Iniciamos la libreria environ
+env = environ.Env()
+environ.Env.read_env()
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bd5^_l8xff!uk-)vh1^syl77=ofatv6z4@21=8=wuk67x6%kjq'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOST', default=[]))
 
 
 # Application definition
@@ -41,6 +46,7 @@ INSTALLED_APPS = [
     'django_summernote',
     "django_flatpickr",
     # apps propias
+    'administrator',
     'core',
     'emailmarketing',
     'feeder',
@@ -58,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'payment.middleware.SubscriptionMiddleware'
 ]
 
 ROOT_URLCONF = 'PronosticadorFutbol.urls'
@@ -88,7 +95,7 @@ WSGI_APPLICATION = 'PronosticadorFutbol.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / env.str('DATABASE_NAME'),
     }
 }
 
@@ -117,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Madrid'
 
 USE_I18N = True
 
@@ -148,6 +155,12 @@ else:
     pass
 
 # para produccion estas variable tienen que ir en variables de entorno para que no se muestren en github
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51QUm1zFW2p0pN1BYbOIqmPrpklkAp0enVg2DMxMoZSpKHMfZsZjWS6jdzt7RBdxiMPFN2vBeAmClMyJlKfHxOKqb00Es6Okc5b'
-STRIPE_SECRET_KEY = 'sk_test_51QUm1zFW2p0pN1BYxaJqZuCOJ9HW71IX94EZd4wDSHinTca1nNyJnWE80nCYpkx0hr8hlqhldST3DlgJ7y63UYkl00eh8qzO3B'
-STRIPE_API_VERSION = '2024-11-20.acacia'
+STRIPE_PUBLISHABLE_KEY = env.str('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY')
+STRIPE_API_VERSION = env.str('STRIPE_API_VERSION')
+
+DOMAIN = 'http://127.0.0.1:8000/'
+
+SESSION_COOKIE_AGE = 1209600  # 2 semanas en segundos
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SAVE_EVERY_REQUEST = False

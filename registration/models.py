@@ -42,7 +42,7 @@ def ensure_profile_exists(sender, instance, **kwargs):
 def update_profile_status(sender, instance, created, **kwargs):
     if created:
         # Calcular la fecha de finalización de la prueba
-        instance.trial_month = timezone.now() + timezone.timedelta(days=30)
+        instance.trial_month = timezone.now() + timezone.timedelta(minutes=20)
         instance.save()
 
 @receiver(post_save, sender=Profile)
@@ -51,13 +51,7 @@ def check_trial_expiration(sender, instance, **kwargs):
         instance.is_trial = False
         instance.save()
 
-@receiver(post_save, sender=Profile)
-def update_subscription_date(sender, instance, **kwargs):
-    # Esta señal se activará cuando se realice un pago y se cree una suscripción
-    if instance.date_subscription and not instance.subscription_month:
-        instance.subscription_month = instance.date_subscription + timezone.timedelta(days=30)
-        instance.is_subscribed = True
-        instance.save()
+
 
 @receiver(post_save, sender=Profile)
 def check_subscription_expiration(sender, instance, **kwargs):

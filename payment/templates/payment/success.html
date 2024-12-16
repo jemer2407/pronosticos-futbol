@@ -5,9 +5,13 @@
 
 <!-- Content Row -->
 <div class="row">
-    <h1>¡Pago realizado con éxito!</h1>
-    <p>Tu suscripción ha sido creada. ¡Gracias por tu compra!</p>
-    <a href="{% url 'home' %}">Volver al inicio</a>
+    <div class="col-12 text-center">
+        <h1>{{title}}!!</h1>
+    </div>
+    <div class="col-12 text-center">
+        <p>Tu suscripción ha sido creada. ¡Gracias por tu compra!</p>
+        <a href="{% url 'home' %}">Volver al inicio</a>
+    </div>    
 </div>
 
 {% endblock %}
