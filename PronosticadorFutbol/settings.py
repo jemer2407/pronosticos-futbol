@@ -154,6 +154,7 @@ else:
     # Aquí hay que configurar un email real para producción
     pass
 
+<<<<<<< HEAD
 # para produccion estas variable tienen que ir en variables de entorno para que no se muestren en github
 STRIPE_PUBLISHABLE_KEY = env.str('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY')
@@ -164,3 +165,5 @@ DOMAIN = 'http://127.0.0.1:8000/'
 SESSION_COOKIE_AGE = 1209600  # 2 semanas en segundos
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = False
+=======
+>>>>>>> 9a97ef7e3dd156f1529659ebecb66a90b2df6f99
